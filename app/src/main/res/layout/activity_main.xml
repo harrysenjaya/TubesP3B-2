@@ -2,66 +2,168 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <ImageView
+        android:id="@+id/iv_canvas"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#3D0BF1" />
+        android:background="#0A0A0A"/>
 
-    <com.melnykov.fab.FloatingActionButton
+    <ImageView
         android:id="@+id/distance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#B9B6B6"
-        android:src="@android:drawable/btn_dialog"
-        app:fab_colorDisabled="#00FF0707"
+        android:layout_width="150px"
+        android:layout_height="150px"
+        android:src="@drawable/location"
         android:layout_marginTop="10px"/>
 
-    <com.melnykov.fab.FloatingActionButton
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Distance"
+        android:id="@+id/jarak"
+        android:textColor="@color/warna"
+        android:textSize="50px"
+        android:layout_toRightOf="@id/distance"
+        android:layout_marginLeft="10px"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="1945"
+        android:textColor="@color/warna"
+        android:textSize="50px"
+        android:layout_toRightOf="@id/distance"
+        android:layout_marginTop="55px"
+        android:layout_marginLeft="10px"/>
+
+    <ImageView
         android:id="@+id/score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150px"
+        android:layout_height="150px"
         android:layout_below="@+id/distance"
-        android:backgroundTint="#B9B6B6"
-        android:src="@android:drawable/ic_menu_mylocation"
+        android:src="@drawable/hastag"
         android:layout_marginTop="10px"/>
 
-    <com.melnykov.fab.FloatingActionButton
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Score"
+        android:id="@+id/skor"
+        android:textColor="@color/warna"
+        android:textSize="50px"
+        android:layout_toRightOf="@id/score"
+        android:layout_marginLeft="10px"
+        android:layout_marginTop="165px"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="5150"
+        android:textColor="@color/warna"
+        android:textSize="50px"
+        android:layout_toRightOf="@id/score"
+        android:layout_marginLeft="10px"
+        android:layout_marginTop="220px"/>
+
+    <ImageView
         android:id="@+id/combo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150px"
+        android:layout_height="150px"
         android:layout_below="@+id/score"
-        android:backgroundTint="#B9B6B6"
-        android:src="@android:drawable/ic_btn_speak_now"
+        android:src="@drawable/mylocation"
         android:layout_marginTop="10px"/>
 
-    <com.melnykov.fab.FloatingActionButton
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Score"
+        android:id="@+id/kombo"
+        android:textColor="@color/warna"
+        android:textSize="50px"
+        android:layout_toRightOf="@id/combo"
+        android:layout_marginLeft="10px"
+        android:layout_marginTop="330px"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="12"
+        android:textColor="@color/warna"
+        android:textSize="50px"
+        android:layout_toRightOf="@id/combo"
+        android:layout_marginLeft="10px"
+        android:layout_marginTop="385px"/>
+
+
+    <ImageView
         android:id="@+id/star"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150px"
+        android:layout_height="150px"
         android:layout_centerHorizontal="true"
-        android:backgroundTint="#B9B6B6"
-        android:src="@android:drawable/ic_btn_speak_now"
+        android:src="@drawable/star"
         android:layout_marginTop="10px"/>
 
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/pause"
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/bintang"
+        android:layout_height="wrap_content"
+        android:text="Stars"
+        android:textSize="50px"
+        android:layout_toRightOf="@id/star"
+        android:layout_marginLeft="475px"
+        android:textColor="@color/warna"/>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="99"
+        android:textSize="50px"
+        android:layout_toRightOf="@id/star"
+        android:layout_below="@id/bintang"
+        android:layout_marginLeft="475px"
+        android:textColor="@color/warna"/>
+
+
+
+    <ImageView
+        android:id="@+id/pause"
+        android:layout_width="150px"
+        android:layout_height="150px"
         android:layout_alignParentRight="true"
-        android:backgroundTint="#B9B6B6"
-        android:src="@android:drawable/ic_media_pause"
+        android:src="@drawable/pause"
         android:layout_marginTop="10px"/>
 
+
     <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/B"
+        android:id="@+id/kanan"
+        android:layout_width="150px"
+        android:layout_height="150px"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10px"
+        android:src="@drawable/right" />
+
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/kiri"
+        android:layout_width="150px"
+        android:layout_height="150px"
+
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10px"
+        android:src="@drawable/left" />
+
+    <Button
+        android:id="@+id/btn_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10px"
-        android:backgroundTint="#B9B6B6"
-        android:src="@android:drawable/ic_input_add" />
+        android:layout_centerHorizontal="true"
+        android:text="@string/start"
+        />
 
 </RelativeLayout>
