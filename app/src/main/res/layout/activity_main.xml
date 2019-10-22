@@ -20,8 +20,8 @@
         android:layout_marginTop="10px"/>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Distance"
         android:id="@+id/jarak"
         android:textColor="@color/warna"
@@ -30,8 +30,8 @@
         android:layout_marginLeft="10px"/>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="1945"
         android:textColor="@color/warna"
         android:textSize="50px"
@@ -48,8 +48,8 @@
         android:layout_marginTop="10px"/>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Score"
         android:id="@+id/skor"
         android:textColor="@color/warna"
@@ -59,8 +59,8 @@
         android:layout_marginTop="165px"/>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="5150"
         android:textColor="@color/warna"
         android:textSize="50px"
@@ -79,8 +79,8 @@
 
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Score"
         android:id="@+id/kombo"
         android:textColor="@color/warna"
@@ -90,8 +90,8 @@
         android:layout_marginTop="330px"/>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="12"
         android:textColor="@color/warna"
         android:textSize="50px"
@@ -129,14 +129,14 @@
         android:textColor="@color/warna"/>
 
 
-
-    <ImageView
-        android:id="@+id/pause"
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/play"
         android:layout_width="150px"
         android:layout_height="150px"
         android:layout_alignParentRight="true"
-        android:src="@drawable/pause"
-        android:layout_marginTop="10px"/>
+        android:layout_marginTop="10px"
+        android:backgroundTint="#F7F2F2"
+        android:src="@android:drawable/ic_media_play" />
 
 
     <com.melnykov.fab.FloatingActionButton
@@ -146,15 +146,17 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10px"
-        android:src="@drawable/right" />
+        android:backgroundTint="#EEEDED"
+        android:src="@drawable/ic_arrow_forward_black_24dp" />
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/kiri"
-        android:layout_width="150px"
-        android:layout_height="150px"
-
+        android:layout_width="203dp"
+        android:layout_height="156dp"
         android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|start"
         android:layout_marginBottom="10px"
-        android:src="@drawable/left" />
+        android:backgroundTint="#F5F1F1"
+        android:src="@drawable/ic_arrow_back_black_24dp" />
 
 </RelativeLayout>

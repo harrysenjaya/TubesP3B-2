@@ -1,5 +1,7 @@
 package com.example.tugasbesar2;
 
+import java.util.Random;
+
 public class NewThread implements Runnable {
     protected Thread thread;
     protected UIThreadedWrapper uiThreadedWrapper;
