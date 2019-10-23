@@ -13,7 +13,19 @@ public class Enemy {
         this.y = y;
     }
 
-    public void drawEnemy(Canvas canvas, Paint paint, int x, int y ){
-        canvas.drawCircle(x/2, y/2, 75, paint);
+    public int GetX(){
+        return this.x;
+    }
+
+    public int GetY(){
+        return this.y;
+    }
+
+    public void SetX(int x){
+        this.x = x;
+    }
+
+    public void SetY(int y){
+        this.y = y;
     }
 }

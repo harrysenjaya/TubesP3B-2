@@ -12,31 +12,74 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.melnykov.fab.FloatingActionButton;
+
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, IMainActivity{
     Bitmap mBitmap;
     ImageView ivCanvas;
     Canvas mCanvas;
-    Button pause;
     Paint paint;
-    Player p1;
-    Enemy enemy1;
+    EnemyThread enemyThread;
+    EnemyMoveThread enemyMoveThread;
+    Player player;
+    //PlayerThread playerThread;
+    UIThreadedWrapper objUIWrapper;
+    FloatingActionButton play;
+    FloatingActionButton kanan;
+    FloatingActionButton kiri;
 
-    int x;
-    int y;
+    ArrayList<Enemy> enemies = new ArrayList<>();
+    boolean run;
+    boolean pause;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        this.play = findViewById(R.id.play);
+        this.kanan = findViewById(R.id.kanan);
+        this.kiri = findViewById(R.id.left);
         this.ivCanvas = findViewById(R.id.iv_canvas);
-        this.p1 = new Player(x, y);
-        this.enemy1 = new Enemy(x, y);
+        this.objUIWrapper = new UIThreadedWrapper(this);
+        this.play.setOnClickListener(this);
+//        this.kanan.setOnClickListener(this);
+//        this.kiri.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        initiateCanvas();
+        if(view.getId() == this.play.getId()){
+            if(!this.run){
+                initiateCanvas();
+                this.run = true;
+            }
+            else{
+//                if(!this.pause) {
+//                    try {
+//                        super.onPause();
+//                        this.enemyMoveThread.wait();
+//                        this.enemyThread.wait();
+//                        this.pause = true;
+//
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                else{
+//                    super.notifyAll();
+//                    this.enemyThread.notifyAll();
+//                    this.enemyMoveThread.notifyAll();
+//                }
+            }
+        }
+        else if(view.getId() == this.kanan.getId()){
+
+        }
+        else if(view.getId() == this.kiri.getId()){
+
+        }
     }
 
     public void initiateCanvas() {
@@ -52,16 +95,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Path path = new Path();
 
         resetCanvas();
-        this.x = ivCanvas.getWidth()/2;
-        this.y = ivCanvas.getHeight()/2;
+        int x = ivCanvas.getWidth()/2;
+        int y = ivCanvas.getHeight()/2;
 
-        p1.drawTriangle(mCanvas, paint, x, (int) (ivCanvas.getHeight()-(ivCanvas.getHeight()*0.2)));
-        enemy1.drawEnemy(mCanvas, paint, x, y);
+        Player player = new Player(x, (int) (ivCanvas.getHeight()-(ivCanvas.getHeight()*0.3)));
+        this.player = player;
 
+        this.drawPlayer(x, (int) (ivCanvas.getHeight()-(ivCanvas.getHeight()*0.3)));
+
+        this.enemyThread = new EnemyThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.ivCanvas.getHeight());
+    //    this.playerThread = new PlayerThread(this.objUIWrapper);
+        this.enemyThread.start();
+    //    this.playerThread.start();
+        this.enemyMoveThread = new EnemyMoveThread(this.objUIWrapper, this.ivCanvas.getHeight(), this.enemies);
+        this.enemyMoveThread.start();
     }
 
     public void resetCanvas() {
-
         int mColorBackground = ResourcesCompat.getColor(getResources(),R.color.background, null);
         mCanvas.drawColor(mColorBackground);
 
@@ -69,8 +119,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    public void drawEnemy(Canvas canvas, Paint paint, int x, int y){
-        mCanvas.drawCircle(x/2 , y/2,75, paint);
+    public void drawPlayer(int x, int y){
+        int halfWidth = x/2;
+        Path path = new Path();
+        path.moveTo(x, y - halfWidth); //titik atas
+        path.lineTo(x - halfWidth, y + halfWidth); // titik kiri bawah
+        path.lineTo( x+ halfWidth, y + halfWidth); // titik kanan bawah
+        path.lineTo( x, y - halfWidth);
+        path.close();
+
+        this.mCanvas.drawPath(path ,paint);
+
+    }
+
+    public void drawEnemy(int x, int y ){
+        this.mCanvas.drawCircle(x/2, y/2, 75, this.paint);
+    }
+
+    public void setEnemy(Enemy enemy) {
+        this.enemies.add(enemy);
+        Player player = this.player;
+        resetCanvas();
+        this.drawPlayer(player.getX(),player.getY());
+        for(int i = 0; i<this.enemies.size(); i++){
+            this.drawEnemy(this.enemies.get(i).GetX(),this.enemies.get(i).GetY());
+        }
+    }
+
+    public void setEnemies(ArrayList<Enemy> enemies){
+        Player player = this.player;
+        this.enemies = enemies;
+        resetCanvas();
+        this.drawPlayer(player.getX(),player.getY());
+        for(int i = 0; i<this.enemies.size(); i++){
+            this.drawEnemy(this.enemies.get(i).GetX(),this.enemies.get(i).GetY());
+        }
     }
 
 }

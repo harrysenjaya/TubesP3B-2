@@ -16,16 +16,11 @@ public class Player {
         this.width = 100;
     }
 
-    public void drawTriangle(Canvas canvas, Paint paint, int x, int y){
-        int halfWidth = this.width/2;
-        Path path = new Path();
-        path.moveTo(x, y - halfWidth); //titik atas
-        path.lineTo(x - halfWidth, y + halfWidth); // titik kiri bawah
-        path.lineTo( x+ halfWidth, y + halfWidth); // titik kanan bawah
-        path.lineTo( x, y - halfWidth);
-        path.close();
+    public int getX(){
+        return this.x;
+    }
 
-        canvas.drawPath(path ,paint);
-
+    public int getY(){
+        return this.y;
     }
 }
