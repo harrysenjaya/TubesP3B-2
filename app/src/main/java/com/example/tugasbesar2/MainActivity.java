@@ -30,8 +30,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     PlayerMoveThread playerMoveThread;
     UIThreadedWrapper objUIWrapper;
     FloatingActionButton play;
-    FloatingActionButton kanan;
-    FloatingActionButton kiri;
     GestureDetector gestureDetector;
     ArrayList<Enemy> enemies = new ArrayList<>();
     Pauser pauser;
@@ -43,16 +41,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.play = findViewById(R.id.play);
-        this.kanan = findViewById(R.id.kanan);
-        this.kiri = findViewById(R.id.left);
         this.ivCanvas = findViewById(R.id.iv_canvas);
         this.gestureDetector = new GestureDetector(this,this);
         this.objUIWrapper = new UIThreadedWrapper(this);
         this.play.setOnClickListener(this);
         this.ivCanvas.setOnTouchListener(this);
         this.pauser = new Pauser();
-//        this.kanan.setOnTouchListener(this);
-//        this.kiri.setOnClickListener(this);
+
     }
 
     @Override

@@ -139,24 +139,4 @@
         android:src="@android:drawable/ic_media_play" />
 
 
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/kanan"
-        android:layout_width="150px"
-        android:layout_height="150px"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10px"
-        android:backgroundTint="#EEEDED"
-        android:src="@drawable/ic_arrow_forward_black_24dp" />
-
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/kiri"
-        android:layout_width="203dp"
-        android:layout_height="156dp"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom|start"
-        android:layout_marginBottom="10px"
-        android:backgroundTint="#F5F1F1"
-        android:src="@drawable/ic_arrow_back_black_24dp" />
-
 </RelativeLayout>
