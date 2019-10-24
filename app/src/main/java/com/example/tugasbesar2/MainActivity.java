@@ -97,20 +97,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onLongPress(MotionEvent motionEvent) {
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            Log.d("ACTION DOWN","");
             float screenX = motionEvent.getX();
+            this.playerMoveThread = new PlayerMoveThread(this.objUIWrapper,this.ivCanvas.getWidth(),this.player,  this.pauser);
             if(screenX>this.ivCanvas.getWidth()/2){
-                this.playerMoveThread = new PlayerMoveThread(this.objUIWrapper,this.ivCanvas.getWidth(),this.player, true, this.pauser);
+                this.playerMoveThread.setKanan(true);
                 this.playerMoveThread.start();
             }
             else{
-
-                this.playerMoveThread = new PlayerMoveThread(this.objUIWrapper,this.ivCanvas.getWidth(),this.player, false,this.pauser);
+                this.playerMoveThread.setKanan(false);
                 this.playerMoveThread.start();
             }
         }
 
         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-            Thread.interrupted();
+            this.playerMoveThread.setIsPaused(true);
         }
     }
 
@@ -142,9 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.drawPlayer(x, (int) (ivCanvas.getHeight() - (ivCanvas.getHeight() * 0.3)));
 
         this.enemyThread = new EnemyThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.ivCanvas.getHeight(),this.pauser);
-        //    this.playerThread = new PlayerThread(this.objUIWrapper);
         this.enemyThread.start();
-        //    this.playerThread.start();
         this.enemyMoveThread = new EnemyMoveThread(this.objUIWrapper, this.ivCanvas.getHeight(), this.enemies,this.pauser);
         this.enemyMoveThread.start();
     }
