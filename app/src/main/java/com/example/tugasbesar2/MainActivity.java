@@ -8,6 +8,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,7 +19,7 @@ import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, IMainActivity{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,View.OnTouchListener,GestureDetector.OnGestureListener,IMainActivity {
     Bitmap mBitmap;
     ImageView ivCanvas;
     Canvas mCanvas;
@@ -24,13 +27,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EnemyThread enemyThread;
     EnemyMoveThread enemyMoveThread;
     Player player;
-    //PlayerThread playerThread;
+    PlayerMoveThread playerMoveThread;
     UIThreadedWrapper objUIWrapper;
     FloatingActionButton play;
     FloatingActionButton kanan;
     FloatingActionButton kiri;
-
+    GestureDetector gestureDetector;
     ArrayList<Enemy> enemies = new ArrayList<>();
+    Pauser pauser;
     boolean run;
     boolean pause;
 
@@ -42,45 +46,84 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.kanan = findViewById(R.id.kanan);
         this.kiri = findViewById(R.id.left);
         this.ivCanvas = findViewById(R.id.iv_canvas);
+        this.gestureDetector = new GestureDetector(this,this);
         this.objUIWrapper = new UIThreadedWrapper(this);
         this.play.setOnClickListener(this);
-//        this.kanan.setOnClickListener(this);
+        this.ivCanvas.setOnTouchListener(this);
+        this.pauser = new Pauser();
+//        this.kanan.setOnTouchListener(this);
 //        this.kiri.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == this.play.getId()){
-            if(!this.run){
+        if (view.getId() == this.play.getId()) {
+            if (!this.run) {
                 initiateCanvas();
                 this.run = true;
+            } else {
+                if(!this.pause) {
+                    this.pauser.pause();
+                    this.pause = true;
+                }
+                else{
+                    this.pauser.resume();
+                    this.pause = false;
+                }
             }
-            else{
-//                if(!this.pause) {
-//                    try {
-//                        super.onPause();
-//                        this.enemyMoveThread.wait();
-//                        this.enemyThread.wait();
-//                        this.pause = true;
-//
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                else{
-//                    super.notifyAll();
-//                    this.enemyThread.notifyAll();
-//                    this.enemyMoveThread.notifyAll();
-//                }
-            }
-        }
-        else if(view.getId() == this.kanan.getId()){
-
-        }
-        else if(view.getId() == this.kiri.getId()){
-
         }
     }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        return this.gestureDetector.onTouchEvent(motionEvent);
+    }
+
+    @Override
+    public boolean onDown(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            float screenX = motionEvent.getX();
+            if(screenX>this.ivCanvas.getWidth()/2){
+                this.playerMoveThread = new PlayerMoveThread(this.objUIWrapper,this.ivCanvas.getWidth(),this.player, true, this.pauser);
+                this.playerMoveThread.start();
+            }
+            else{
+
+                this.playerMoveThread = new PlayerMoveThread(this.objUIWrapper,this.ivCanvas.getWidth(),this.player, false,this.pauser);
+                this.playerMoveThread.start();
+            }
+        }
+
+        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            Thread.interrupted();
+        }
+    }
+
+    @Override
+    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
 
     public void initiateCanvas() {
         mBitmap = Bitmap.createBitmap(ivCanvas.getWidth(), ivCanvas.getHeight(), Bitmap.Config.ARGB_8888);
@@ -95,65 +138,73 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Path path = new Path();
 
         resetCanvas();
-        int x = ivCanvas.getWidth()/2;
-        int y = ivCanvas.getHeight()/2;
+        int x = ivCanvas.getWidth() / 2;
+        int y = ivCanvas.getHeight() / 2;
 
-        Player player = new Player(x, (int) (ivCanvas.getHeight()-(ivCanvas.getHeight()*0.3)));
+        Player player = new Player(x, (int) (ivCanvas.getHeight() - (ivCanvas.getHeight() * 0.3)));
         this.player = player;
 
-        this.drawPlayer(x, (int) (ivCanvas.getHeight()-(ivCanvas.getHeight()*0.3)));
+        this.drawPlayer(x, (int) (ivCanvas.getHeight() - (ivCanvas.getHeight() * 0.3)));
 
-        this.enemyThread = new EnemyThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.ivCanvas.getHeight());
-    //    this.playerThread = new PlayerThread(this.objUIWrapper);
+        this.enemyThread = new EnemyThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.ivCanvas.getHeight(),this.pauser);
+        //    this.playerThread = new PlayerThread(this.objUIWrapper);
         this.enemyThread.start();
-    //    this.playerThread.start();
-        this.enemyMoveThread = new EnemyMoveThread(this.objUIWrapper, this.ivCanvas.getHeight(), this.enemies);
+        //    this.playerThread.start();
+        this.enemyMoveThread = new EnemyMoveThread(this.objUIWrapper, this.ivCanvas.getHeight(), this.enemies,this.pauser);
         this.enemyMoveThread.start();
     }
 
     public void resetCanvas() {
-        int mColorBackground = ResourcesCompat.getColor(getResources(),R.color.background, null);
+        int mColorBackground = ResourcesCompat.getColor(getResources(), R.color.background, null);
         mCanvas.drawColor(mColorBackground);
 
         this.ivCanvas.invalidate();
     }
 
 
-    public void drawPlayer(int x, int y){
-        int halfWidth = x/2;
+    public void drawPlayer(int x, int y) {
+        int halfWidth = x / 2;
         Path path = new Path();
         path.moveTo(x, y - halfWidth); //titik atas
         path.lineTo(x - halfWidth, y + halfWidth); // titik kiri bawah
-        path.lineTo( x+ halfWidth, y + halfWidth); // titik kanan bawah
-        path.lineTo( x, y - halfWidth);
+        path.lineTo(x + halfWidth, y + halfWidth); // titik kanan bawah
+        path.lineTo(x, y - halfWidth);
         path.close();
 
-        this.mCanvas.drawPath(path ,paint);
+        this.mCanvas.drawPath(path, paint);
 
     }
 
-    public void drawEnemy(int x, int y ){
-        this.mCanvas.drawCircle(x/2, y/2, 75, this.paint);
+    public void drawEnemy(int x, int y) {
+        this.mCanvas.drawCircle(x / 2, y / 2, 75, this.paint);
     }
 
     public void setEnemy(Enemy enemy) {
         this.enemies.add(enemy);
         Player player = this.player;
         resetCanvas();
-        this.drawPlayer(player.getX(),player.getY());
-        for(int i = 0; i<this.enemies.size(); i++){
-            this.drawEnemy(this.enemies.get(i).GetX(),this.enemies.get(i).GetY());
+        this.drawPlayer(player.getX(), player.getY());
+        for (int i = 0; i < this.enemies.size(); i++) {
+            this.drawEnemy(this.enemies.get(i).GetX(), this.enemies.get(i).GetY());
         }
     }
 
-    public void setEnemies(ArrayList<Enemy> enemies){
+    public void setEnemies(ArrayList<Enemy> enemies) {
         Player player = this.player;
         this.enemies = enemies;
         resetCanvas();
-        this.drawPlayer(player.getX(),player.getY());
-        for(int i = 0; i<this.enemies.size(); i++){
-            this.drawEnemy(this.enemies.get(i).GetX(),this.enemies.get(i).GetY());
+        this.drawPlayer(player.getX(), player.getY());
+        for (int i = 0; i < this.enemies.size(); i++) {
+            this.drawEnemy(this.enemies.get(i).GetX(), this.enemies.get(i).GetY());
         }
     }
 
+    public void setPlayer(Player player) {
+        resetCanvas();
+        this.player = player;
+        this.drawPlayer(player.getX(), player.getY());
+        for (int i = 0; i < this.enemies.size(); i++) {
+            this.drawEnemy(this.enemies.get(i).GetX(), this.enemies.get(i).GetY());
+        }
+    }
 }

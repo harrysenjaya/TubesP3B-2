@@ -9,12 +9,14 @@ public class EnemyMoveThread implements Runnable{
     protected UIThreadedWrapper uiThreadedWrapper;
     protected int height;
     protected ArrayList<Enemy> enemies;
+    protected Pauser pauser;
 
-    public EnemyMoveThread(UIThreadedWrapper uiThreadedWrapper, int height, ArrayList<Enemy> enemies){
+    public EnemyMoveThread(UIThreadedWrapper uiThreadedWrapper, int height, ArrayList<Enemy> enemies, Pauser pauser){
         this.uiThreadedWrapper = uiThreadedWrapper;
         this.thread = new Thread(this);
         this.height = height;
         this.enemies = enemies;
+        this.pauser = pauser;
     }
 
     public void start(){
@@ -24,7 +26,12 @@ public class EnemyMoveThread implements Runnable{
     @Override
     public void run() {
         while(true) {
-           for(int i = 0 ; i<this.enemies.size(); i++){
+            try {
+                this.pauser.look();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for(int i = 0 ; i<this.enemies.size(); i++){
                enemies.get(i).SetY(enemies.get(i).GetY()+20);
            }
            this.uiThreadedWrapper.setEnemies(enemies);
