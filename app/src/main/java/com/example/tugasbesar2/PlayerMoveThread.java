@@ -10,15 +10,13 @@ public class PlayerMoveThread implements Runnable {
     protected int width;
     protected Player player;
     protected boolean kanan;
-    protected Pauser pauser;
     private boolean isPaused;
 
-    public PlayerMoveThread(UIThreadedWrapper uiThreadedWrapper, int width, Player player, Pauser pauser){
+    public PlayerMoveThread(UIThreadedWrapper uiThreadedWrapper, int width, Player player){
         this.uiThreadedWrapper = uiThreadedWrapper;
         this.thread = new Thread(this);
         this.player = player;
         this.width = width;
-        this.pauser = pauser;
     }
 
     public void start(){
@@ -27,13 +25,7 @@ public class PlayerMoveThread implements Runnable {
 
     @Override
     public void run() {
-        Log.d("KANAN",kanan+"");
        while(this.player.getX() > 0 && this.player.getX() < this.width && isPaused == false) {
-           try {
-               this.pauser.look();
-           } catch (InterruptedException e) {
-               e.printStackTrace();
-           }
            if (this.kanan) {
                 this.player.setX(this.player.getX() + 5);
                 this.player.setY(this.player.getY());
@@ -51,11 +43,12 @@ public class PlayerMoveThread implements Runnable {
        }
     }
 
-    public void setIsPaused(boolean isPaused){
+    public void setPaused(boolean isPaused){
         this.isPaused = isPaused;
     }
 
     public void setKanan(boolean kanan) {
         this.kanan = kanan;
     }
+
 }

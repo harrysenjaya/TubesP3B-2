@@ -1,6 +1,8 @@
 package com.example.tugasbesar2;
 
 
+import android.util.Log;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -9,14 +11,13 @@ public class EnemyMoveThread implements Runnable{
     protected UIThreadedWrapper uiThreadedWrapper;
     protected int height;
     protected ArrayList<Enemy> enemies;
-    protected Pauser pauser;
+    private boolean isPaused;
 
-    public EnemyMoveThread(UIThreadedWrapper uiThreadedWrapper, int height, ArrayList<Enemy> enemies, Pauser pauser){
+    public EnemyMoveThread(UIThreadedWrapper uiThreadedWrapper, int height, ArrayList<Enemy> enemies){
         this.uiThreadedWrapper = uiThreadedWrapper;
         this.thread = new Thread(this);
         this.height = height;
         this.enemies = enemies;
-        this.pauser = pauser;
     }
 
     public void start(){
@@ -25,12 +26,7 @@ public class EnemyMoveThread implements Runnable{
 
     @Override
     public void run() {
-        while(true) {
-            try {
-                this.pauser.look();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        while(!this.isPaused) {
             for(int i = 0 ; i<this.enemies.size(); i++){
                enemies.get(i).SetY(enemies.get(i).GetY()+20);
            }
@@ -41,5 +37,10 @@ public class EnemyMoveThread implements Runnable{
                 e.printStackTrace();
             }
         }
+    }
+
+    public void setPaused(boolean paused) {
+        Log.d("pause",paused+"");
+        this.isPaused = paused;
     }
 }

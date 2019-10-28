@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -30,7 +31,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     UIThreadedWrapper objUIWrapper;
     FloatingActionButton play;
     ArrayList<Enemy> enemies = new ArrayList<>();
-    Pauser pauser;
     boolean run;
     boolean pause;
 
@@ -43,8 +43,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.objUIWrapper = new UIThreadedWrapper(this);
         this.play.setOnClickListener(this);
         this.ivCanvas.setOnTouchListener(this);
-        this.pauser = new Pauser();
-
     }
 
     @Override
@@ -55,11 +53,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 this.run = true;
             } else {
                 if(!this.pause) {
-                    this.pauser.pause();
+                    this.enemyMoveThread.setPaused(true);
+                    this.enemyThread.setPaused(true);
+                    this.playerMoveThread.setPaused(true);
                     this.pause = true;
                 }
-                else{
-                    this.pauser.resume();
+                else if(this.pause){
+                    this.enemyMoveThread.setPaused(false);
+                    this.enemyThread.setPaused(false);
+                    this.playerMoveThread.setPaused(false);
                     this.pause = false;
                 }
             }
@@ -68,21 +70,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            Log.d("ACTION DOWN", "");
-            float screenX = motionEvent.getX();
-            this.playerMoveThread = new PlayerMoveThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.player, this.pauser);
-            if (screenX > this.ivCanvas.getWidth() / 2) {
-                this.playerMoveThread.setKanan(true);
-                this.playerMoveThread.start();
-            } else {
-                this.playerMoveThread.setKanan(false);
-                this.playerMoveThread.start();
+        if (!this.pause) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                this.playerMoveThread.setPaused(false);
+                Log.d("ACTION DOWN", "");
+                float screenX = motionEvent.getX();
+                if (screenX > this.ivCanvas.getWidth() / 2) {
+                    this.playerMoveThread.setKanan(true);
+                    this.playerMoveThread.start();
+                } else {
+                    this.playerMoveThread.setKanan(false);
+                    this.playerMoveThread.start();
+                }
             }
-        }
 
-        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-            this.playerMoveThread.setIsPaused(true);
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                this.playerMoveThread.setPaused(true);
+            }
         }
         return true;
     }
@@ -107,17 +111,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.player = player;
 
         this.drawPlayer(x, (int) (ivCanvas.getHeight() - (ivCanvas.getHeight() * 0.3)));
-
-        this.enemyThread = new EnemyThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.ivCanvas.getHeight(),this.pauser);
+        this.playerMoveThread = new PlayerMoveThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.player);
+        this.enemyThread = new EnemyThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.ivCanvas.getHeight());
         this.enemyThread.start();
-        this.enemyMoveThread = new EnemyMoveThread(this.objUIWrapper, this.ivCanvas.getHeight(), this.enemies,this.pauser);
+        this.enemyMoveThread = new EnemyMoveThread(this.objUIWrapper, this.ivCanvas.getHeight(), this.enemies);
         this.enemyMoveThread.start();
     }
 
     public void resetCanvas() {
-        int mColorBackground = ResourcesCompat.getColor(getResources(), R.color.background, null);
-        mCanvas.drawColor(mColorBackground);
-
+        this.mCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         this.ivCanvas.invalidate();
     }
 
