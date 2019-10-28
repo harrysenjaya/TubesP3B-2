@@ -12,14 +12,13 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,View.OnTouchListener,GestureDetector.OnGestureListener,IMainActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,View.OnTouchListener,IMainActivity {
     Bitmap mBitmap;
     ImageView ivCanvas;
     Canvas mCanvas;
@@ -30,7 +29,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     PlayerMoveThread playerMoveThread;
     UIThreadedWrapper objUIWrapper;
     FloatingActionButton play;
-    GestureDetector gestureDetector;
     ArrayList<Enemy> enemies = new ArrayList<>();
     Pauser pauser;
     boolean run;
@@ -42,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         this.play = findViewById(R.id.play);
         this.ivCanvas = findViewById(R.id.iv_canvas);
-        this.gestureDetector = new GestureDetector(this,this);
         this.objUIWrapper = new UIThreadedWrapper(this);
         this.play.setOnClickListener(this);
         this.ivCanvas.setOnTouchListener(this);
@@ -71,40 +68,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        return this.gestureDetector.onTouchEvent(motionEvent);
-    }
-
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            Log.d("ACTION DOWN","");
+            Log.d("ACTION DOWN", "");
             float screenX = motionEvent.getX();
-            this.playerMoveThread = new PlayerMoveThread(this.objUIWrapper,this.ivCanvas.getWidth(),this.player,  this.pauser);
-            if(screenX>this.ivCanvas.getWidth()/2){
+            this.playerMoveThread = new PlayerMoveThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.player, this.pauser);
+            if (screenX > this.ivCanvas.getWidth() / 2) {
                 this.playerMoveThread.setKanan(true);
                 this.playerMoveThread.start();
-            }
-            else{
+            } else {
                 this.playerMoveThread.setKanan(false);
                 this.playerMoveThread.start();
             }
@@ -113,13 +84,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             this.playerMoveThread.setIsPaused(true);
         }
+        return true;
     }
-
-    @Override
-    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-        return false;
-    }
-
 
     public void initiateCanvas() {
         mBitmap = Bitmap.createBitmap(ivCanvas.getWidth(), ivCanvas.getHeight(), Bitmap.Config.ARGB_8888);
