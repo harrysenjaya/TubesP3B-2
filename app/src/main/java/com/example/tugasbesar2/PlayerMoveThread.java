@@ -27,16 +27,20 @@ public class PlayerMoveThread implements Runnable {
     public void run() {
        while(this.player.getX() > 0 && this.player.getX() < this.width && isPaused == false) {
            if (this.kanan) {
-                this.player.setX(this.player.getX() + 5);
-                this.player.setY(this.player.getY());
+               if (this.player.getX() + this.width / 8 < this.width) {
+                   this.player.setX(this.player.getX() + 5);
+                   this.player.setY(this.player.getY());
+               }
            }
-           else{
-               this.player.setX(this.player.getX() - 5);
-               this.player.setY(this.player.getY());
+           else {
+               if (this.player.getX() - this.width / 8 > 0) {
+                   this.player.setX(this.player.getX() - 5);
+                   this.player.setY(this.player.getY());
+               }
            }
            this.uiThreadedWrapper.setPlayer(this.player);
            try {
-               Thread.sleep(50);
+               Thread.sleep(25);
            } catch (InterruptedException e) {
                e.printStackTrace();
            }
