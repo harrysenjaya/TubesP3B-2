@@ -27,7 +27,7 @@ public class EnemyThread implements Runnable {
         while (true) {
             while (!this.isPaused) {
                 int x = random.nextInt(width-75) + 1;
-                int y = 200;
+                int y = 100;
                 Enemy enemy = new Enemy(x, y);
                 this.uiThreadedWrapper.setEnemy(enemy);
                 try {
