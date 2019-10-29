@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -136,9 +137,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         path.lineTo(x + halfWidth, y + halfWidth); // titik kanan bawah
         path.lineTo(x, y - halfWidth);
         path.close();
-
         this.mCanvas.drawPath(path, paint);
 
+        Rect rectangle = new Rect(x+10,y-150, x-10, y-100);
+        this.mCanvas.drawRect(rectangle,paint);
     }
 
     public void drawEnemy(int x, int y) {
