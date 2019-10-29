@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void drawPlayer(int x, int y) {
-        int halfWidth = x / 2;
+        int halfWidth = x / 6;
         Path path = new Path();
         path.moveTo(x, y - halfWidth); //titik atas
         path.lineTo(x - halfWidth, y + halfWidth); // titik kiri bawah
