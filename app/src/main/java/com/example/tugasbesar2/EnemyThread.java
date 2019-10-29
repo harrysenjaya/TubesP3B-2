@@ -24,15 +24,17 @@ public class EnemyThread implements Runnable {
 
     @Override
     public void run() {
-        while(!this.isPaused){
-            int x = random.nextInt(width)+1;
-            int y = 200;
-            Enemy enemy = new Enemy(x,y);
-            this.uiThreadedWrapper.setEnemy(enemy);
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        while (true) {
+            while (!this.isPaused) {
+                int x = random.nextInt(width) + 1;
+                int y = 200;
+                Enemy enemy = new Enemy(x, y);
+                this.uiThreadedWrapper.setEnemy(enemy);
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
