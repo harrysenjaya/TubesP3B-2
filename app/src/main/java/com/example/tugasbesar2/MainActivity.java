@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Player player = new Player(x, (int) (ivCanvas.getHeight() - (ivCanvas.getHeight() * 0.3)));
         this.player = player;
         this.drawPlayer(x, (int) (ivCanvas.getHeight() - (ivCanvas.getHeight() * 0.3)));
+        this.drawBullet(x, (int) (ivCanvas.getHeight() - (ivCanvas.getHeight() * 0.3)));
         this.playerMoveThread = new PlayerMoveThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.player);
         this.enemyThread = new EnemyThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.ivCanvas.getHeight());
         this.enemyThread.start();
@@ -139,13 +140,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         path.close();
         this.mCanvas.drawPath(path, paint);
 
-        Rect rectangle = new Rect(x+10,y-150, x-10, y-100);
-        this.mCanvas.drawRect(rectangle,paint);
+        //Rect rectangle = new Rect(x+10,y-150, x-10, y-100);
+        // this.mCanvas.drawRect(rectangle,paint);
+    }
+
+    public void drawBullet(int x, int y){
+        Rect rectangle = new Rect(x+10 , y - 150, x - 10, y - 100);
+        this.mCanvas.drawRect(rectangle, paint);
     }
 
     public void drawEnemy(int x, int y) {
         this.mCanvas.drawCircle(x, y, 75, this.paint);
     }
+
 
     public void setEnemy(Enemy enemy) {
         this.enemies.add(enemy);
