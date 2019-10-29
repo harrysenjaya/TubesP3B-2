@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     UIThreadedWrapper objUIWrapper;
     FloatingActionButton play;
     ArrayList<Enemy> enemies = new ArrayList<>();
-    boolean run;
     boolean pause;
 
     @Override
@@ -46,12 +45,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    public void onWindowFocusChanged(boolean focus){
+        super.onWindowFocusChanged(focus);
+        initiateCanvas();
+    }
+
+    @Override
     public void onClick(View view) {
         if (view.getId() == this.play.getId()) {
-            if (!this.run) {
-                initiateCanvas();
-                this.run = true;
-            } else {
                 if(!this.pause) {
                     this.enemyMoveThread.setPaused(true);
                     this.enemyThread.setPaused(true);
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
-    }
+
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
