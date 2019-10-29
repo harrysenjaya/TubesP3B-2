@@ -36,7 +36,7 @@ public class PlayerMoveThread implements Runnable {
            }
            this.uiThreadedWrapper.setPlayer(this.player);
            try {
-               Thread.sleep(200);
+               Thread.sleep(100);
            } catch (InterruptedException e) {
                e.printStackTrace();
            }

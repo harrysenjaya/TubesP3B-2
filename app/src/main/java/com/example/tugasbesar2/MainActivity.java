@@ -3,6 +3,7 @@ package com.example.tugasbesar2;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 
 import com.melnykov.fab.FloatingActionButton;
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     UIThreadedWrapper objUIWrapper;
     FloatingActionButton play;
     ArrayList<Enemy> enemies = new ArrayList<>();
+    Presenter presenter;
     boolean pause;
 
     @Override
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         this.play = findViewById(R.id.play);
         this.ivCanvas = findViewById(R.id.iv_canvas);
+        this.presenter = new Presenter(this);
         this.objUIWrapper = new UIThreadedWrapper(this);
         this.play.setOnClickListener(this);
         this.ivCanvas.setOnTouchListener(this);
@@ -110,12 +114,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Player player = new Player(x, (int) (ivCanvas.getHeight() - (ivCanvas.getHeight() * 0.3)));
         this.player = player;
-
         this.drawPlayer(x, (int) (ivCanvas.getHeight() - (ivCanvas.getHeight() * 0.3)));
         this.playerMoveThread = new PlayerMoveThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.player);
         this.enemyThread = new EnemyThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.ivCanvas.getHeight());
         this.enemyThread.start();
-        this.enemyMoveThread = new EnemyMoveThread(this.objUIWrapper, this.ivCanvas.getHeight(), this.enemies);
+        this.enemyMoveThread = new EnemyMoveThread(this.objUIWrapper, this.ivCanvas.getHeight(), this.enemies, this.presenter);
         this.enemyMoveThread.start();
     }
 
@@ -139,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void drawEnemy(int x, int y) {
-        this.mCanvas.drawCircle(x / 2, y / 2, 75, this.paint);
+        this.mCanvas.drawCircle(x, y, 75, this.paint);
     }
 
     public void setEnemy(Enemy enemy) {
@@ -170,4 +173,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             this.drawEnemy(this.enemies.get(i).GetX(), this.enemies.get(i).GetY());
         }
     }
+
+//    @Override
+//    public void gameOver(){
+//        this.enemyMoveThread.setPaused(true);
+//        this.enemyThread.setPaused(true);
+//        this.playerMoveThread.setPaused(true);
+//        Dialog settingsDialog = new Dialog(this);
+//        settingsDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+//        settingsDialog.setContentView(getLayoutInflater().inflate(R.layout.gameover, null));
+//        settingsDialog.show();
+//    }
 }

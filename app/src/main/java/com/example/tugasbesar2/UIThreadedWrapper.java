@@ -12,6 +12,8 @@ public class UIThreadedWrapper extends Handler {
     protected final static int setEnemy=0;
     protected final static int setEnemies=1;
     protected final static int setPlayer=2;
+    protected final static int gameOver=2;
+
 
     protected MainActivity mainActivity;
 
@@ -33,6 +35,9 @@ public class UIThreadedWrapper extends Handler {
             Player parameter = (Player) msg.obj;
             this.mainActivity.setPlayer(parameter);
         }
+//        else if(msg.what==UIThreadedWrapper.gameOver){
+//            this.mainActivity.gameOver();
+//        }
     }
 
     public void setEnemy(Enemy enemy) {
@@ -55,5 +60,11 @@ public class UIThreadedWrapper extends Handler {
         msg.obj = player;
         this.sendMessage(msg);
     }
+
+//    public void gameOver(){
+//        Message msg = new Message();
+//        msg.what = gameOver;
+//        this.sendMessage(msg);
+//    }
 
 }
