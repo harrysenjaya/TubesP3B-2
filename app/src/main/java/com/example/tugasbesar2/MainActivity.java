@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void drawPlayer(int x, int y) {
-        int halfWidth = x / 6;
+        int halfWidth = this.ivCanvas.getWidth()/8;
         Path path = new Path();
         path.moveTo(x, y - halfWidth); //titik atas
         path.lineTo(x - halfWidth, y + halfWidth); // titik kiri bawah
@@ -139,9 +139,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         path.lineTo(x, y - halfWidth);
         path.close();
         this.mCanvas.drawPath(path, paint);
-
-        //Rect rectangle = new Rect(x+10,y-150, x-10, y-100);
-        // this.mCanvas.drawRect(rectangle,paint);
     }
 
     public void drawBullet(int x, int y){
