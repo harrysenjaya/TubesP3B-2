@@ -31,9 +31,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EnemyMoveThread enemyMoveThread;
     Player player;
     PlayerMoveThread playerMoveThread;
+    BulletThread bulletThread;
     UIThreadedWrapper objUIWrapper;
     FloatingActionButton play;
     ArrayList<Enemy> enemies = new ArrayList<>();
+    ArrayList<Bullet> bullets = new ArrayList<>();
     Presenter presenter;
     boolean pause;
 
@@ -62,12 +64,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     this.enemyMoveThread.setPaused(true);
                     this.enemyThread.setPaused(true);
                     this.playerMoveThread.setPaused(true);
+                    this.bulletThread.setPaused(true);
                     this.pause = true;
                 }
                 else if(this.pause){
                     this.enemyMoveThread.setPaused(false);
                     this.enemyThread.setPaused(false);
                     this.playerMoveThread.setPaused(false);
+                    this.bulletThread.setPaused(false);
                     this.pause = false;
                 }
             }
@@ -92,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 this.playerMoveThread.setPaused(true);
+                this.bulletThread.setPlayer(this.player);
             }
         }
         return true;
@@ -116,12 +121,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Player player = new Player(x, (int) (ivCanvas.getHeight() - (ivCanvas.getHeight() * 0.3)));
         this.player = player;
         this.drawPlayer(x, (int) (ivCanvas.getHeight() - (ivCanvas.getHeight() * 0.3)));
-        this.drawBullet(x, (int) (ivCanvas.getHeight() - (ivCanvas.getHeight() * 0.3)));
         this.playerMoveThread = new PlayerMoveThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.player);
         this.enemyThread = new EnemyThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.ivCanvas.getHeight());
         this.enemyThread.start();
         this.enemyMoveThread = new EnemyMoveThread(this.objUIWrapper, this.ivCanvas.getHeight(), this.enemies, this.presenter);
         this.enemyMoveThread.start();
+        this.bulletThread = new BulletThread(this.objUIWrapper,this.bullets,this.player,this.enemies);
+        this.bulletThread.start();
     }
 
     public void resetCanvas() {
@@ -154,10 +160,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void setEnemy(Enemy enemy) {
         this.enemies.add(enemy);
         Player player = this.player;
+        this.bulletThread.setEnemies(this.enemies);
         resetCanvas();
         this.drawPlayer(player.getX(), player.getY());
         for (int i = 0; i < this.enemies.size(); i++) {
             this.drawEnemy(this.enemies.get(i).GetX(), this.enemies.get(i).GetY());
+        }
+        for (int i = 0; i < this.bullets.size(); i++) {
+            this.drawBullet(this.bullets.get(i).getX(), this.bullets.get(i).getY());
         }
     }
 
@@ -169,6 +179,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for (int i = 0; i < this.enemies.size(); i++) {
             this.drawEnemy(this.enemies.get(i).GetX(), this.enemies.get(i).GetY());
         }
+        for (int i = 0; i < this.bullets.size(); i++) {
+            this.drawBullet(this.bullets.get(i).getX(), this.bullets.get(i).getY());
+        }
     }
 
     public void setPlayer(Player player) {
@@ -178,6 +191,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for (int i = 0; i < this.enemies.size(); i++) {
             this.drawEnemy(this.enemies.get(i).GetX(), this.enemies.get(i).GetY());
         }
+        for (int i = 0; i < this.bullets.size(); i++) {
+            this.drawBullet(this.bullets.get(i).getX(), this.bullets.get(i).getY());
+        }
+    }
+
+    public void setBullets(ArrayList<Bullet> bullets){
+        this.bullets = bullets;
+        resetCanvas();
+        this.drawPlayer(player.getX(),player.getY());
+        for (int i = 0; i < this.enemies.size(); i++) {
+            this.drawEnemy(this.enemies.get(i).GetX(), this.enemies.get(i).GetY());
+        }
+        for (int i = 0; i < this.bullets.size(); i++) {
+            this.drawBullet(this.bullets.get(i).getX(), this.bullets.get(i).getY());
+        }
+
     }
 
 //    @Override

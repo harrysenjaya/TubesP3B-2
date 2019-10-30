@@ -3,7 +3,6 @@ package com.example.tugasbesar2;
 public class Bullet {
     private int x;
     private int y;
-    private int width;
 
 
     public Bullet(int x, int y){

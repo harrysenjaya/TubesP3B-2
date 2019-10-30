@@ -32,12 +32,11 @@ public class EnemyMoveThread implements Runnable{
         while(true) {
             while (!this.isPaused) {
                 for (int i = 0; i < this.enemies.size(); i++) {
-                    Log.d("height",enemies.get(i).GetY()+20+" "+this.height);
                     if(enemies.get(i).GetY()+75>this.height){
 //                        this.uiThreadedWrapper.gameOver();
                         break loop;
                     }
-                    enemies.get(i).SetY(enemies.get(i).GetY() + 20);
+                    enemies.get(i).SetY(enemies.get(i).GetY() + 40);
                 }
                 this.uiThreadedWrapper.setEnemies(enemies);
                 try {
