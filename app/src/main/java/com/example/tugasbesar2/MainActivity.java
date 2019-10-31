@@ -6,17 +6,21 @@ import androidx.core.content.res.ResourcesCompat;
 import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
 
@@ -27,6 +31,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView ivCanvas;
     Canvas mCanvas;
     Paint paint;
+    TextView skor_tv;
+    TextView jarak_tv;
+    TextView kill_tv;
     EnemyThread enemyThread;
     EnemyMoveThread enemyMoveThread;
     Player player;
@@ -39,6 +46,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ArrayList<Bullet> bullets = new ArrayList<>();
     Presenter presenter;
     boolean pause;
+    int skor;
+    int jarak;
+    int kill;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +56,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         this.play = findViewById(R.id.play);
         this.ivCanvas = findViewById(R.id.iv_canvas);
+        this.skor_tv = findViewById(R.id.skor);
+        this.jarak_tv = findViewById(R.id.jarak);
+        this.kill_tv = findViewById(R.id.kill);
+        this.jarak = 0;
+        this.kill = 0;
         this.presenter = new Presenter(this);
         this.objUIWrapper = new UIThreadedWrapper(this);
         this.play.setOnClickListener(this);
@@ -174,6 +189,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for (int i = 0; i < this.bullets.size(); i++) {
             this.drawBullet(this.bullets.get(i).getX(), this.bullets.get(i).getY());
         }
+        this.jarak+=1;
+        this.jarak_tv.setText(this.jarak+"");
+        this.skor = this.kill + this.jarak;
+        this.skor_tv.setText(this.skor+"");
     }
 
     public void setEnemies(ArrayList<Enemy> enemies) {
@@ -215,6 +234,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void setBullets(ArrayList<Bullet> bullets){
+        if(this.bullets.size()>bullets.size()){
+            this.kill+=1;
+            this.kill_tv.setText(this.kill+"");
+            this.skor = this.kill + this.jarak;
+            this.skor_tv.setText(this.skor+"");
+        }
         this.bullets = bullets;
         resetCanvas();
         this.drawPlayer(player.getX(),player.getY());
@@ -227,14 +252,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-//    @Override
-//    public void gameOver(){
-//        this.enemyMoveThread.setPaused(true);
-//        this.enemyThread.setPaused(true);
-//        this.playerMoveThread.setPaused(true);
-//        Dialog settingsDialog = new Dialog(this);
-//        settingsDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-//        settingsDialog.setContentView(getLayoutInflater().inflate(R.layout.gameover, null));
-//        settingsDialog.show();
-//    }
+    @Override
+    public void gameOver(){
+        this.enemyMoveThread.setPaused(true);
+        this.enemyThread.setPaused(true);
+        this.bulletThread.setPaused(true);
+        this.bulletMoveThread.setPaused(true);
+        this.playerMoveThread.setPaused(true);
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.gameover);
+        Button close = dialog.findViewById(R.id.close);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
 }

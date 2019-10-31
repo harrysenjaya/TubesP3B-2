@@ -33,7 +33,6 @@ public class EnemyMoveThread implements Runnable{
             while (!this.isPaused) {
                 for (int i = 0; i < this.enemies.size(); i++) {
                     if(enemies.get(i).GetY()+75>this.height){
-//                        this.uiThreadedWrapper.gameOver();
                         break loop;
                     }
                     enemies.get(i).SetY(enemies.get(i).GetY() + 40);
@@ -46,6 +45,7 @@ public class EnemyMoveThread implements Runnable{
                 }
             }
         }
+        this.uiThreadedWrapper.gameOver();
     }
 
     public void setPaused(boolean paused) {
