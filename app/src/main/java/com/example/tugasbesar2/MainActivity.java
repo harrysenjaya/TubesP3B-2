@@ -144,16 +144,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void drawPlayer(int x, int y) {
         int halfWidth = this.ivCanvas.getWidth()/8;
         Path path = new Path();
-        path.moveTo(x, y - halfWidth); //titik atas
-        path.lineTo(x - halfWidth, y + halfWidth); // titik kiri bawah
-        path.lineTo(x + halfWidth, y + halfWidth); // titik kanan bawah
-        path.lineTo(x, y - halfWidth);
+        path.moveTo(x, y - ((halfWidth/8)-300)); //titik atas
+        path.lineTo(x - (halfWidth-20), y + (halfWidth+300)); // titik kiri bawah
+        path.lineTo(x + (halfWidth-20), y + (halfWidth+300)); // titik kanan bawah
+        path.lineTo(x, y - ((halfWidth/8)-300));
         path.close();
         this.mCanvas.drawPath(path, paint);
     }
 
     public void drawBullet(int x, int y){
-        Rect rectangle = new Rect(x+10 , y - 150, x - 10, y - 100);
+        Rect rectangle = new Rect(x+10 , y + 350, x - 10, y + 300);
         this.mCanvas.drawRect(rectangle, paint);
     }
 
