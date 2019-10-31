@@ -28,7 +28,7 @@ public class BulletMoveThread implements Runnable{
             while (!isPaused) {
                 for (int i = 0; i < this.bullets.size(); i++) {
                     for (int j = 0; j < this.enemies.size(); j++) {
-                        if (Math.abs(this.bullets.get(i).getX() - this.enemies.get(j).GetX()) < 75 && Math.abs(this.bullets.get(i).getY() - this.enemies.get(j).GetY()) < 75) {
+                        if (Math.abs(this.bullets.get(i).getX() - this.enemies.get(j).GetX()) < 75 && Math.abs(this.bullets.get(i).getY() - this.enemies.get(j).GetY() + 300) < 75) {
                             this.enemies.remove(j);
                             this.bullets.remove(i);
                             this.uiThreadedWrapper.setEnemies(this.enemies);
