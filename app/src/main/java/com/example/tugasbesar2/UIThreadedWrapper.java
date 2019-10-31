@@ -13,6 +13,7 @@ public class UIThreadedWrapper extends Handler {
     protected final static int setEnemies=1;
     protected final static int setPlayer=2;
     protected final static int setBullet=3;
+    protected final static int setBullets=4;
     protected final static int gameOver=4;
 
 
@@ -37,9 +38,13 @@ public class UIThreadedWrapper extends Handler {
             this.mainActivity.setPlayer(parameter);
         }
         else if(msg.what==UIThreadedWrapper.setBullet){
+            Bullet parameter = (Bullet) msg.obj;
+            this.mainActivity.setBullet(parameter);
+        }else if(msg.what==UIThreadedWrapper.setBullets){
             ArrayList<Bullet> parameter = (ArrayList<Bullet>) msg.obj;
             this.mainActivity.setBullets(parameter);
         }
+
 //        else if(msg.what==UIThreadedWrapper.gameOver){
 //            this.mainActivity.gameOver();
 //        }
@@ -66,9 +71,16 @@ public class UIThreadedWrapper extends Handler {
         this.sendMessage(msg);
     }
 
-    public void setBullets(ArrayList<Bullet> bullets){
+    public void setBullet(Bullet bullet){
         Message msg = new Message();
         msg.what = setBullet;
+        msg.obj = bullet;
+        this.sendMessage(msg);
+    }
+
+    public void setBullets(ArrayList<Bullet> bullets){
+        Message msg = new Message();
+        msg.what = setBullets;
         msg.obj = bullets;
         this.sendMessage(msg);
     }

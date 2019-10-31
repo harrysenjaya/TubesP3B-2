@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Player player;
     PlayerMoveThread playerMoveThread;
     BulletThread bulletThread;
+    BulletMoveThread bulletMoveThread;
     UIThreadedWrapper objUIWrapper;
     FloatingActionButton play;
     ArrayList<Enemy> enemies = new ArrayList<>();
@@ -63,15 +64,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(!this.pause) {
                     this.enemyMoveThread.setPaused(true);
                     this.enemyThread.setPaused(true);
-                    this.playerMoveThread.setPaused(true);
+                    this.playerMoveThread.setPaused(false);
                     this.bulletThread.setPaused(true);
+                    this.bulletMoveThread.setPaused(true);
                     this.pause = true;
                 }
                 else if(this.pause){
                     this.enemyMoveThread.setPaused(false);
                     this.enemyThread.setPaused(false);
-                    this.playerMoveThread.setPaused(false);
+                    this.playerMoveThread.setPaused(true);
                     this.bulletThread.setPaused(false);
+                    this.bulletMoveThread.setPaused(false);
                     this.pause = false;
                 }
             }
@@ -81,22 +84,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         if (!this.pause) {
+            this.playerMoveThread.setPaused(false);
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                this.playerMoveThread.setPaused(false);
                 Log.d("ACTION DOWN", "");
                 float screenX = motionEvent.getX();
                 if (screenX > this.ivCanvas.getWidth() / 2) {
                     this.playerMoveThread.setKanan(true);
-                    this.playerMoveThread.start();
                 } else {
                     this.playerMoveThread.setKanan(false);
-                    this.playerMoveThread.start();
+                    Log.d("SET", "");
                 }
             }
 
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 this.playerMoveThread.setPaused(true);
                 this.bulletThread.setPlayer(this.player);
+                this.bulletMoveThread.setBullets(this.bullets);
             }
         }
         return true;
@@ -112,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.paint = new Paint();
         int mColorTest = ResourcesCompat.getColor(getResources(), R.color.colorAccent, null);
         this.paint.setColor(mColorTest);
-        Path path = new Path();
 
         resetCanvas();
         int x = ivCanvas.getWidth() / 2;
@@ -122,12 +124,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.player = player;
         this.drawPlayer(x, (int) (ivCanvas.getHeight() - (ivCanvas.getHeight() * 0.3)));
         this.playerMoveThread = new PlayerMoveThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.player);
+        this.playerMoveThread.start();
         this.enemyThread = new EnemyThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.ivCanvas.getHeight());
         this.enemyThread.start();
         this.enemyMoveThread = new EnemyMoveThread(this.objUIWrapper, this.ivCanvas.getHeight(), this.enemies, this.presenter);
         this.enemyMoveThread.start();
-        this.bulletThread = new BulletThread(this.objUIWrapper,this.bullets,this.player,this.enemies);
+        this.bulletThread = new BulletThread(this.objUIWrapper,this.player);
         this.bulletThread.start();
+        this.bulletMoveThread = new BulletMoveThread(this.objUIWrapper,this.bullets,this.enemies);
+        this.bulletMoveThread.start();
+            Log.d("TES","TES");
     }
 
     public void resetCanvas() {
@@ -160,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void setEnemy(Enemy enemy) {
         this.enemies.add(enemy);
         Player player = this.player;
-        this.bulletThread.setEnemies(this.enemies);
+        this.bulletMoveThread.setEnemies(this.enemies);
         resetCanvas();
         this.drawPlayer(player.getX(), player.getY());
         for (int i = 0; i < this.enemies.size(); i++) {
@@ -194,6 +200,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for (int i = 0; i < this.bullets.size(); i++) {
             this.drawBullet(this.bullets.get(i).getX(), this.bullets.get(i).getY());
         }
+    }
+
+    public void setBullet(Bullet bullet){
+        this.bullets.add(bullet);
+        resetCanvas();
+        this.drawPlayer(player.getX(),player.getY());
+        for (int i = 0; i < this.enemies.size(); i++) {
+            this.drawEnemy(this.enemies.get(i).GetX(), this.enemies.get(i).GetY());
+        }
+        for (int i = 0; i < this.bullets.size(); i++) {
+            this.drawBullet(this.bullets.get(i).getX(), this.bullets.get(i).getY());
+        }
+
     }
 
     public void setBullets(ArrayList<Bullet> bullets){

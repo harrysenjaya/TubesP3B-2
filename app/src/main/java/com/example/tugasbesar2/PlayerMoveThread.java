@@ -9,8 +9,10 @@ public class PlayerMoveThread implements Runnable {
     protected UIThreadedWrapper uiThreadedWrapper;
     protected int width;
     protected Player player;
+    protected int down = 5;
+    protected int up = 0;
     protected boolean kanan;
-    private boolean isPaused;
+    private boolean isPaused = true;
 
     public PlayerMoveThread(UIThreadedWrapper uiThreadedWrapper, int width, Player player){
         this.uiThreadedWrapper = uiThreadedWrapper;
@@ -25,25 +27,45 @@ public class PlayerMoveThread implements Runnable {
 
     @Override
     public void run() {
-       while(this.player.getX() > 0 && this.player.getX() < this.width && isPaused == false) {
-           if (this.kanan) {
-               if (this.player.getX() + this.width / 8 < this.width) {
-                   this.player.setX(this.player.getX() + 5);
-                   this.player.setY(this.player.getY());
+        while(this.player.getX() > 0 && this.player.getX() < this.width) {
+            if(!this.isPaused){
+                if (this.kanan) {
+                   if (this.player.getX() + this.width / 8 < this.width) {
+                       this.player.setX(this.player.getX() + down);
+                       this.player.setY(this.player.getY());
+                   }
+               } else {
+                   if (this.player.getX() - this.width / 8 > 0) {
+                       this.player.setX(this.player.getX() - down);
+                       this.player.setY(this.player.getY());
+                   }
+               }
+               this.uiThreadedWrapper.setPlayer(this.player);
+               try {
+                   Thread.sleep(25);
+               } catch (InterruptedException e) {
+                   e.printStackTrace();
                }
            }
-           else {
-               if (this.player.getX() - this.width / 8 > 0) {
-                   this.player.setX(this.player.getX() - 5);
-                   this.player.setY(this.player.getY());
-               }
-           }
-           this.uiThreadedWrapper.setPlayer(this.player);
-           try {
-               Thread.sleep(25);
-           } catch (InterruptedException e) {
-               e.printStackTrace();
-           }
+            else{
+                if (this.kanan) {
+                    if (this.player.getX() + this.width / 8 < this.width) {
+                        this.player.setX(this.player.getX() + up);
+                        this.player.setY(this.player.getY());
+                    }
+                } else {
+                    if (this.player.getX() - this.width / 8 > 0) {
+                        this.player.setX(this.player.getX() - up);
+                        this.player.setY(this.player.getY());
+                    }
+                }
+                this.uiThreadedWrapper.setPlayer(this.player);
+                try {
+                    Thread.sleep(25);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
        }
     }
 
@@ -54,5 +76,10 @@ public class PlayerMoveThread implements Runnable {
     public void setKanan(boolean kanan) {
         this.kanan = kanan;
     }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
 
 }
