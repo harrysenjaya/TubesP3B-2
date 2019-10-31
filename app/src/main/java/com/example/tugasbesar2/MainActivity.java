@@ -160,8 +160,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int halfWidth = this.ivCanvas.getWidth()/8;
         Path path = new Path();
         path.moveTo(x, y - ((halfWidth/8)-300)); //titik atas
-        path.lineTo(x - (halfWidth-20), y + (halfWidth+300)); // titik kiri bawah
-        path.lineTo(x + (halfWidth-20), y + (halfWidth+300)); // titik kanan bawah
+        path.lineTo(x - (halfWidth-70), y + (halfWidth+300)); // titik kiri bawah
+        path.lineTo(x + (halfWidth-70), y + (halfWidth+300)); // titik kanan bawah
         path.lineTo(x, y - ((halfWidth/8)-300));
         path.close();
         this.mCanvas.drawPath(path, paint);
