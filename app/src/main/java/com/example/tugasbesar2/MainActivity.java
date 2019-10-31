@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(!this.pause) {
                     this.enemyMoveThread.setPaused(true);
                     this.enemyThread.setPaused(true);
-                    this.playerMoveThread.setPaused(false);
                     this.bulletThread.setPaused(true);
                     this.bulletMoveThread.setPaused(true);
                     this.pause = true;
