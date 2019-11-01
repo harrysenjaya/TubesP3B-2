@@ -30,7 +30,7 @@ public class PlayerMoveThread implements Runnable {
         while(this.player.getX() > 0 && this.player.getX() < this.width) {
             if(!this.isPaused){
                 if (this.kanan) {
-                   if (this.player.getX() + this.width / 8 < this.width) {
+                   if (this.player.getX() + ((this.width / 8)-70) < this.width) {
                        this.player.setX(this.player.getX() + down);
                        this.player.setY(this.player.getY());
                    }
