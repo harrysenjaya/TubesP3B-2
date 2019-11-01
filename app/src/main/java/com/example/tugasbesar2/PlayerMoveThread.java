@@ -49,12 +49,12 @@ public class PlayerMoveThread implements Runnable {
            }
             else{
                 if (this.kanan) {
-                    if (this.player.getX() + this.width / 8 < this.width) {
+                    if (this.player.getX() + ((this.width / 8)-70) < this.width) {
                         this.player.setX(this.player.getX() + up);
                         this.player.setY(this.player.getY());
                     }
                 } else {
-                    if (this.player.getX() - this.width / 8 > 0) {
+                    if (this.player.getX() - ((this.width / 8)-70) > 0) {
                         this.player.setX(this.player.getX() - up);
                         this.player.setY(this.player.getY());
                     }
