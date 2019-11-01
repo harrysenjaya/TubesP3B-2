@@ -76,6 +76,15 @@
         android:src="@drawable/star"
         android:layout_marginTop="10px"/>
 
+    <ImageView
+        android:id="@+id/highscore"
+        android:layout_width="150px"
+        android:layout_height="150px"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/star"
+        android:src="@drawable/highscore"
+        android:layout_marginTop="10px"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:id="@+id/bintang"
@@ -97,6 +106,28 @@
         android:layout_marginLeft="475px"
         android:textColor="@color/warna"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nilaiTertinggi"
+        android:text="Highcore"
+        android:textSize="50px"
+        android:layout_toRightOf="@id/star"
+        android:layout_below="@id/kill"
+        android:layout_marginTop="30px"
+        android:layout_marginLeft="475px"
+        android:textColor="@color/warna"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nilaiTertingginya"
+        android:text="0"
+        android:textSize="50px"
+        android:layout_toRightOf="@id/star"
+        android:layout_below="@id/nilaiTertinggi"
+        android:layout_marginLeft="475px"
+        android:textColor="@color/warna"/>
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/play"
@@ -106,6 +137,5 @@
         android:layout_marginTop="10px"
         android:backgroundTint="#F7F2F2"
         android:src="@android:drawable/ic_media_play" />
-
 
 </RelativeLayout>
