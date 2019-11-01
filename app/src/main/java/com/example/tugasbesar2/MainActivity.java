@@ -100,13 +100,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!this.pause) {
             this.playerMoveThread.setPaused(false);
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                Log.d("ACTION DOWN", "");
                 float screenX = motionEvent.getX();
                 if (screenX > this.ivCanvas.getWidth() / 2) {
                     this.playerMoveThread.setKanan(true);
                 } else {
                     this.playerMoveThread.setKanan(false);
-                    Log.d("SET", "");
                 }
             }
 
@@ -147,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.bulletThread.start();
         this.bulletMoveThread = new BulletMoveThread(this.objUIWrapper,this.bullets,this.enemies);
         this.bulletMoveThread.start();
-            Log.d("TES","TES");
     }
 
     public void resetCanvas() {
@@ -234,12 +231,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void setBullets(ArrayList<Bullet> bullets){
-        if(this.bullets.size()>bullets.size()){
-            this.kill+=1;
-            this.kill_tv.setText(this.kill+"");
-            this.skor = this.kill + this.jarak;
-            this.skor_tv.setText(this.skor+"");
-        }
         this.bullets = bullets;
         resetCanvas();
         this.drawPlayer(player.getX(),player.getY());
@@ -252,6 +243,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    public void kill(){
+            this.kill+=1;
+            this.kill_tv.setText(this.kill+"");
+            this.skor = this.kill + this.jarak;
+            this.skor_tv.setText(this.skor+"");
+    }
+
     @Override
     public void gameOver(){
         this.enemyMoveThread.setPaused(true);
@@ -259,15 +257,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.bulletThread.setPaused(true);
         this.bulletMoveThread.setPaused(true);
         this.playerMoveThread.setPaused(true);
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.gameover);
-        Button close = dialog.findViewById(R.id.close);
-        close.setOnClickListener(new View.OnClickListener() {
+        this.pause = true;
+        this.play.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+            public void onClick(View view) {
+                resetCanvas();
             }
         });
-        dialog.show();
+//        final Dialog dialog = new Dialog(this);
+//        dialog.setContentView(R.layout.gameover);
+//        Button close = dialog.findViewById(R.id.close);
+//        close.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.dismiss();
+//            }
+//        });
+//        dialog.show();
     }
 }
