@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,6 +13,10 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -26,7 +31,7 @@ import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,View.OnTouchListener,IMainActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,View.OnTouchListener,IMainActivity, SensorEventListener {
     Bitmap mBitmap;
     ImageView ivCanvas;
     Canvas mCanvas;
@@ -45,6 +50,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ArrayList<Enemy> enemies = new ArrayList<>();
     ArrayList<Bullet> bullets = new ArrayList<>();
     Presenter presenter;
+    SensorManager mSensorManager;
+    Sensor accelerometer;
+    Sensor magnetometer;
+
+    float[] accelerometerReading;
+    float[] magnetometerReading;
     boolean pause;
     int skor;
     int jarak;
@@ -65,6 +76,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.objUIWrapper = new UIThreadedWrapper(this);
         this.play.setOnClickListener(this);
         this.ivCanvas.setOnTouchListener(this);
+
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        this.accelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        this.magnetometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
     }
 
     @Override
@@ -115,6 +130,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         return true;
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();;
+        if(this.accelerometer != null){
+            this.mSensorManager.registerListener(this, this.accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        if(this.magnetometer != null){
+            this.mSensorManager.registerListener(this, this.magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        this.mSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event){
+        int sensorType = event.sensor.getType();
+        switch (sensorType){
+            case Sensor.TYPE_ACCELEROMETER:
+                this.accelerometerReading = event.values.clone();
+
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                this.magnetometerReading = event.values.clone();
+        }
+
+        final float[] rotationMatrix = new float[9];
+        mSensorManager.getRotationMatrix(rotationMatrix,null, accelerometerReading,magnetometerReading);
+
+        final float[] orientationAngles = new float[3];
+        mSensorManager.getOrientation(rotationMatrix, orientationAngles);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i ){
+
     }
 
     public void initiateCanvas() {
