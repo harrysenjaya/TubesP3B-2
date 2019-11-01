@@ -35,7 +35,7 @@ public class PlayerMoveThread implements Runnable {
                        this.player.setY(this.player.getY());
                    }
                } else {
-                   if (this.player.getX() - this.width / 8 > 0) {
+                   if (this.player.getX() - ((this.width / 8)-70) > 0) {
                        this.player.setX(this.player.getX() - down);
                        this.player.setY(this.player.getY());
                    }
