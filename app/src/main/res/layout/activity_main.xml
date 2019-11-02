@@ -135,7 +135,17 @@
         android:layout_height="150px"
         android:layout_alignParentRight="true"
         android:layout_marginTop="10px"
-        android:backgroundTint="#F7F2F2"
+        android:backgroundTint="#E7E771"
         android:src="@android:drawable/ic_media_play" />
+
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/sensor"
+        android:layout_width="150px"
+        android:layout_height="150px"
+        android:layout_below="@+id/play"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10px"
+        android:backgroundTint="#69BCF5"
+        android:src="@android:drawable/ic_menu_always_landscape_portrait" />
 
 </RelativeLayout>
