@@ -23,6 +23,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView skor_tv;
     TextView jarak_tv;
     TextView kill_tv;
+    TextView highscore;
     EnemyThread enemyThread;
     EnemyMoveThread enemyMoveThread;
     Player player;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     BulletMoveThread bulletMoveThread;
     UIThreadedWrapper objUIWrapper;
     FloatingActionButton play;
+    FloatingActionButton mode;
     ArrayList<Enemy> enemies = new ArrayList<>();
     ArrayList<Bullet> bullets = new ArrayList<>();
     Presenter presenter;
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     float[] accelerometerReading;
     float[] magnetometerReading;
     boolean pause;
+    boolean sensor;
     int skor;
     int jarak;
     int kill;
@@ -70,13 +74,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.skor_tv = findViewById(R.id.skor);
         this.jarak_tv = findViewById(R.id.jarak);
         this.kill_tv = findViewById(R.id.kill);
+        this.highscore = findViewById(R.id.nilaiTertingginya);
+        this.mode = findViewById(R.id.sensor);
+        this.sensor = false;
         this.jarak = 0;
         this.kill = 0;
         this.presenter = new Presenter(this);
         this.objUIWrapper = new UIThreadedWrapper(this);
         this.play.setOnClickListener(this);
         this.ivCanvas.setOnTouchListener(this);
-
+        this.mode.setOnClickListener(this);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         this.accelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         this.magnetometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -107,26 +114,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     this.pause = false;
                 }
             }
+        else if(view.getId() == this.mode.getId()){
+            if(this.sensor){
+                this.sensor = false;
+                this.playerMoveThread.setPaused(true);
+            }
+            else{
+                this.sensor = true;
+                this.playerMoveThread.setPaused(true);
+            }
+        }
         }
 
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         if (!this.pause) {
-            this.playerMoveThread.setPaused(false);
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                float screenX = motionEvent.getX();
-                if (screenX > this.ivCanvas.getWidth() / 2) {
-                    this.playerMoveThread.setKanan(true);
-                } else {
-                    this.playerMoveThread.setKanan(false);
+            if (!this.sensor) {
+                this.playerMoveThread.setPaused(false);
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    float screenX = motionEvent.getX();
+                    if (screenX > this.ivCanvas.getWidth() / 2) {
+                        this.playerMoveThread.setKanan(true);
+                    } else {
+                        this.playerMoveThread.setKanan(false);
+                    }
                 }
-            }
 
-            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                this.playerMoveThread.setPaused(true);
-                this.bulletThread.setPlayer(this.player);
-                this.bulletMoveThread.setBullets(this.bullets);
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    this.playerMoveThread.setPaused(true);
+                    this.bulletThread.setPlayer(this.player);
+                    this.bulletMoveThread.setBullets(this.bullets);
+                }
             }
         }
         return true;
@@ -151,35 +170,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onSensorChanged(SensorEvent event){
-        int sensorType = event.sensor.getType();
-        switch (sensorType){
-            case Sensor.TYPE_ACCELEROMETER:
-                this.accelerometerReading = event.values.clone();
+        if(this.sensor) {
+            int sensorType = event.sensor.getType();
+            switch (sensorType) {
+                case Sensor.TYPE_ACCELEROMETER:
+                    this.accelerometerReading = event.values.clone();
 
-            case Sensor.TYPE_MAGNETIC_FIELD:
-                this.magnetometerReading = event.values.clone();
+                case Sensor.TYPE_MAGNETIC_FIELD:
+                    this.magnetometerReading = event.values.clone();
+            }
+
+            final float[] rotationMatrix = new float[9];
+            mSensorManager.getRotationMatrix(rotationMatrix, null, accelerometerReading, magnetometerReading);
+
+            final float[] orientationAngles = new float[3];
+            mSensorManager.getOrientation(rotationMatrix, orientationAngles);
+
+            float roll = orientationAngles[2];
+
+            if (Math.abs(roll) < 0.2f) {
+                roll = 0;
+                this.playerMoveThread.setPaused(true);
+            }
+
+            if(roll>0){
+                this.playerMoveThread.setPaused(false);
+                this.playerMoveThread.setKanan(true);
+            }
+            else if(roll<0){
+                this.playerMoveThread.setPaused(false);
+                this.playerMoveThread.setKanan(false);
+            }
         }
-
-        final float[] rotationMatrix = new float[9];
-        mSensorManager.getRotationMatrix(rotationMatrix,null, accelerometerReading,magnetometerReading);
-
-        final float[] orientationAngles = new float[3];
-        mSensorManager.getOrientation(rotationMatrix, orientationAngles);
-
-        float azimuth = orientationAngles[0];
-        float pitch = orientationAngles[1];
-        float roll = orientationAngles[2];
-
-        if(Math.abs(azimuth)<0.05f){
-            azimuth = 0;
-        }
-        if(Math.abs(pitch)<0.05f){
-            pitch = 0;
-        }
-        if(Math.abs(roll)<0.05f){
-            roll = 0;
-        }
-
     }
 
     @Override

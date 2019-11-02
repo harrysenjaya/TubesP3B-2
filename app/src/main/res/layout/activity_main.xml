@@ -110,7 +110,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/nilaiTertinggi"
-        android:text="Highcore"
+        android:text="Highscore"
         android:textSize="50px"
         android:layout_toRightOf="@id/star"
         android:layout_below="@id/kill"

@@ -42,8 +42,10 @@ public class BulletMoveThread implements Runnable{
                             this.uiThreadedWrapper.kill();
                         }
                     }
-//                    Log.d("index",i+"");
-                    this.bullets.get(i).setY(this.bullets.get(i).getY() - 10);
+                    if(i<this.bullets.size()) {
+                        Log.d("index", i + " " + this.bullets.size());
+                        this.bullets.get(i).setY(this.bullets.get(i).getY() - 10);
+                    }
                 }
                 this.uiThreadedWrapper.setBullets(this.bullets);
                 try {
