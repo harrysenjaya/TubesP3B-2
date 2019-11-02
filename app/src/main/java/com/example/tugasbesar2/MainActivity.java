@@ -134,12 +134,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onStart(){
-        super.onStart();;
+        super.onStart();
         if(this.accelerometer != null){
-            this.mSensorManager.registerListener(this, this.accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            this.mSensorManager.registerListener(this, this.accelerometer, SensorManager.SENSOR_DELAY_GAME);
         }
         if(this.magnetometer != null){
-            this.mSensorManager.registerListener(this, this.magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+            this.mSensorManager.registerListener(this, this.magnetometer, SensorManager.SENSOR_DELAY_GAME);
         }
     }
 
@@ -165,6 +165,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         final float[] orientationAngles = new float[3];
         mSensorManager.getOrientation(rotationMatrix, orientationAngles);
+
+        float azimuth = orientationAngles[0];
+        float pitch = orientationAngles[1];
+        float roll = orientationAngles[2];
+
+        if(Math.abs(azimuth)<0.05f){
+            azimuth = 0;
+        }
+        if(Math.abs(pitch)<0.05f){
+            pitch = 0;
+        }
+        if(Math.abs(roll)<0.05f){
+            roll = 0;
+        }
+
     }
 
     @Override
