@@ -330,4 +330,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        });
 //        dialog.show();
     }
+
+    @Override
+    public void sendResult(Result result){
+        String[] res = result.getResult();
+        String temp ="";
+        boolean flag = true;
+        for(int i=0; i<res.length;i++){
+            if(flag){
+                temp+= res[i];
+                flag = false;
+            }
+            else{
+                temp+=", " +res[i];
+            }
+        }
+        this.skor_tv.setText(temp);
+    }
 }
