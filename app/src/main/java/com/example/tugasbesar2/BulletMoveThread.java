@@ -35,11 +35,11 @@ public class BulletMoveThread implements Runnable {
                     }
                     for (int j = 0; j < this.enemies.size(); j++) {
                         if (Math.abs(this.bullets.get(i).getX() - this.enemies.get(j).GetX()) < 75 && Math.abs(this.bullets.get(i).getY() - this.enemies.get(j).GetY() + 300) < 75) {
-                            if (this.enemies.get(j).getHealt() <= 0) {
+                            if (this.enemies.get(j).getHealth() <= 0) {
                                 this.enemies.remove(j);
                                 this.uiThreadedWrapper.kill();
                             } else {
-                                this.enemies.get(j).setHealt(this.enemies.get(j).getHealt() - 1);
+                                this.enemies.get(j).setHealth(this.enemies.get(j).getHealth() - 1);
                             }
                             this.bullets.remove(i);
                             this.uiThreadedWrapper.setEnemies(this.enemies);
@@ -54,7 +54,7 @@ public class BulletMoveThread implements Runnable {
                 }
                 this.uiThreadedWrapper.setBullets(this.bullets);
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void setEnemy(Enemy enemy) {
         int nextH=(int) Math.floor(Integer.parseInt(this.kill_tv.getText().toString()) / 5);
-        enemy.setHealt(enemy.getHealt()+nextH);
+        enemy.setHealth(enemy.getHealth()+nextH);
         this.enemies.add(enemy);
         Player player = this.player;
         this.bulletMoveThread.setEnemies(this.enemies);

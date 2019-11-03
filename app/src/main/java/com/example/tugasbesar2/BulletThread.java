@@ -27,7 +27,7 @@ public class BulletThread implements Runnable{
                 Bullet bullet = new Bullet(this.player.getX(), this.player.getY() - 100);
                 this.uiThreadedWrapper.setBullet(bullet);
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

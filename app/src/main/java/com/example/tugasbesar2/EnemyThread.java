@@ -8,7 +8,7 @@ public class EnemyThread implements Runnable {
     protected Random random;
     protected int width;
     protected int height;
-    protected int healt=0;
+    protected int health=0;
     private boolean isPaused;
 
     public EnemyThread(UIThreadedWrapper uiThreadedWrapper, int width, int height){
@@ -29,10 +29,10 @@ public class EnemyThread implements Runnable {
             while (!this.isPaused) {
                 int x = random.nextInt(width-75) + 1;
                 int y = 100;
-                Enemy enemy = new Enemy(x, y,healt);
+                Enemy enemy = new Enemy(x, y,health);
                 this.uiThreadedWrapper.setEnemy(enemy);
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

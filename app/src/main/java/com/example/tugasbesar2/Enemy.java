@@ -7,20 +7,20 @@ public class Enemy {
     private int x;
     private int y;
     //power Up
-    private int healt;
+    private int health;
 
-    public Enemy(int x, int y, int healt) {
+    public Enemy(int x, int y, int health) {
         this.x = x;
         this.y = y;
-        this.healt = healt;
+        this.health = health;
     }
 
-    public int getHealt() {
-        return healt;
+    public int getHealth() {
+        return health;
     }
 
-    public void setHealt(int healt) {
-        this.healt = healt;
+    public void setHealth(int healt) {
+        this.health = healt;
     }
 
     public int GetX(){
