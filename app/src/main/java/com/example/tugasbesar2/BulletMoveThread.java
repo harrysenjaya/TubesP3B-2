@@ -11,6 +11,7 @@ public class BulletMoveThread implements Runnable {
     private ArrayList<Bullet> bullets;
     private ArrayList<Enemy> enemies;
     private boolean isPaused;
+    private boolean gameOver;
 
     public BulletMoveThread(UIThreadedWrapper uiThreadedWrapper, ArrayList<Bullet> bullets, ArrayList<Enemy> enemies) {
         this.uiThreadedWrapper = uiThreadedWrapper;
@@ -26,7 +27,7 @@ public class BulletMoveThread implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (!gameOver) {
             while (!isPaused) {
                 for (int i = 0; i < this.bullets.size(); i++) {
                     if (this.bullets.get(i).getY() < -1000) {
@@ -72,6 +73,10 @@ public class BulletMoveThread implements Runnable {
 
     public void setPaused ( boolean paused){
         isPaused = paused;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
     }
 }
 

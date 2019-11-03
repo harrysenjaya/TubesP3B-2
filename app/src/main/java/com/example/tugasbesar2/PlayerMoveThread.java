@@ -13,6 +13,7 @@ public class PlayerMoveThread implements Runnable {
     protected int up = 0;
     protected boolean kanan;
     private boolean isPaused = true;
+    private boolean gameOver;
 
     public PlayerMoveThread(UIThreadedWrapper uiThreadedWrapper, int width, Player player){
         this.uiThreadedWrapper = uiThreadedWrapper;
@@ -27,7 +28,7 @@ public class PlayerMoveThread implements Runnable {
 
     @Override
     public void run() {
-        while(this.player.getX() > 0 && this.player.getX() < this.width) {
+        while(this.player.getX() > 0 && this.player.getX() < this.width && !gameOver) {
             if(!this.isPaused){
                 if (this.kanan) {
                    if (this.player.getX() + ((this.width / 8)-70) < this.width) {
@@ -81,5 +82,7 @@ public class PlayerMoveThread implements Runnable {
         this.player = player;
     }
 
-
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
 }

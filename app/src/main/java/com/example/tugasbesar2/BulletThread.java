@@ -8,6 +8,7 @@ public class BulletThread implements Runnable{
     protected UIThreadedWrapper uiThreadedWrapper;
     private Player player;
     private boolean isPaused;
+    private boolean gameOver;
 
     public BulletThread(UIThreadedWrapper uiThreadedWrapper,Player player){
         this.uiThreadedWrapper = uiThreadedWrapper;
@@ -22,7 +23,7 @@ public class BulletThread implements Runnable{
 
     @Override
     public void run() {
-        while (true) {
+        while (!gameOver) {
             while (!isPaused) {
                 Bullet bullet = new Bullet(this.player.getX(), this.player.getY() - 100);
                 this.uiThreadedWrapper.setBullet(bullet);
@@ -42,4 +43,9 @@ public class BulletThread implements Runnable{
     public void setPaused(boolean paused) {
         isPaused = paused;
     }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
 }
+

@@ -10,6 +10,7 @@ public class EnemyThread implements Runnable {
     protected int height;
     protected int health=0;
     private boolean isPaused;
+    private boolean gameOver;
 
     public EnemyThread(UIThreadedWrapper uiThreadedWrapper, int width, int height){
         this.uiThreadedWrapper = uiThreadedWrapper;
@@ -25,7 +26,7 @@ public class EnemyThread implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (!gameOver) {
             while (!this.isPaused) {
                 int x = random.nextInt(width-75) + 1;
                 int y = 100;
@@ -42,5 +43,9 @@ public class EnemyThread implements Runnable {
 
     public void setPaused(boolean paused) {
         this.isPaused = paused;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
     }
 }

@@ -50,8 +50,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     UIThreadedWrapper objUIWrapper;
     FloatingActionButton play;
     FloatingActionButton mode;
-    ArrayList<Enemy> enemies = new ArrayList<>();
-    ArrayList<Bullet> bullets = new ArrayList<>();
+    ArrayList<Enemy> enemies;
+    ArrayList<Bullet> bullets;
     Presenter presenter;
     SensorManager mSensorManager;
     Sensor accelerometer;
@@ -76,23 +76,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.kill_tv = findViewById(R.id.kill);
         this.highscore = findViewById(R.id.nilaiTertingginya);
         this.mode = findViewById(R.id.sensor);
-        this.sensor = false;
-        this.jarak = 0;
-        this.kill = 0;
-        this.presenter = new Presenter(this);
-        this.objUIWrapper = new UIThreadedWrapper(this);
-        this.play.setOnClickListener(this);
-        this.ivCanvas.setOnTouchListener(this);
-        this.mode.setOnClickListener(this);
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        this.accelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        this.magnetometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
     }
 
     @Override
     public void onWindowFocusChanged(boolean focus){
         super.onWindowFocusChanged(focus);
-        initiateCanvas();
+        initiate();
     }
 
     @Override
@@ -209,7 +198,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public void initiateCanvas() {
+    public void initiate() {
+        this.jarak = 0;
+        this.kill = 0;
+        this.enemies = new ArrayList<>();
+        this.bullets = new ArrayList<>();
+        this.sensor = false;
+        this.kill_tv.setText(0+"");
+        this.skor_tv.setText(0+"");
+        this.jarak_tv.setText(0+"");
+        this.presenter = new Presenter(this);
+        this.objUIWrapper = new UIThreadedWrapper(this);
+        this.play.setOnClickListener(this);
+        this.ivCanvas.setOnTouchListener(this);
+        this.mode.setOnClickListener(this);
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        this.accelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        this.magnetometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
         mBitmap = Bitmap.createBitmap(ivCanvas.getWidth(), ivCanvas.getHeight(), Bitmap.Config.ARGB_8888);
 
         this.ivCanvas.setImageBitmap(mBitmap);
@@ -351,23 +357,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.bulletThread.setPaused(true);
         this.bulletMoveThread.setPaused(true);
         this.playerMoveThread.setPaused(true);
-        this.pause = true;
+        this.enemyThread.setGameOver(true);
+        this.enemyMoveThread.setGameOver(true);
+        this.bulletMoveThread.setGameOver(true);
+        this.bulletThread.setGameOver(true);
+        this.playerMoveThread.setGameOver(true);
         this.play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                resetCanvas();
+                initiate();
             }
         });
-//        final Dialog dialog = new Dialog(this);
-//        dialog.setContentView(R.layout.gameover);
-//        Button close = dialog.findViewById(R.id.close);
-//        close.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog.dismiss();
-//            }
-//        });
-//        dialog.show();
     }
 
     @Override
