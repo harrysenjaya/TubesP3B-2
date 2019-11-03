@@ -4,7 +4,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-public class BulletMoveThread implements Runnable{
+public class BulletMoveThread implements Runnable {
 
     protected Thread thread;
     protected UIThreadedWrapper uiThreadedWrapper;
@@ -12,14 +12,14 @@ public class BulletMoveThread implements Runnable{
     private ArrayList<Enemy> enemies;
     private boolean isPaused;
 
-    public BulletMoveThread(UIThreadedWrapper uiThreadedWrapper, ArrayList<Bullet> bullets, ArrayList<Enemy> enemies){
+    public BulletMoveThread(UIThreadedWrapper uiThreadedWrapper, ArrayList<Bullet> bullets, ArrayList<Enemy> enemies) {
         this.uiThreadedWrapper = uiThreadedWrapper;
         this.thread = new Thread(this);
         this.bullets = bullets;
         this.enemies = enemies;
     }
 
-    public void start(){
+    public void start() {
         this.thread.start();
     }
 
@@ -29,20 +29,25 @@ public class BulletMoveThread implements Runnable{
         while (true) {
             while (!isPaused) {
                 for (int i = 0; i < this.bullets.size(); i++) {
-                    if(this.bullets.get(i).getY()<-1000){
+                    if (this.bullets.get(i).getY() < -1000) {
                         this.bullets.remove(i);
                         continue;
                     }
                     for (int j = 0; j < this.enemies.size(); j++) {
                         if (Math.abs(this.bullets.get(i).getX() - this.enemies.get(j).GetX()) < 75 && Math.abs(this.bullets.get(i).getY() - this.enemies.get(j).GetY() + 300) < 75) {
-                            this.enemies.remove(j);
+                            if (this.enemies.get(j).getHealt() <= 0) {
+                                this.enemies.remove(j);
+                                this.uiThreadedWrapper.kill();
+                            } else {
+                                this.enemies.get(j).setHealt(this.enemies.get(j).getHealt() - 1);
+                            }
                             this.bullets.remove(i);
                             this.uiThreadedWrapper.setEnemies(this.enemies);
                             this.uiThreadedWrapper.setBullets(this.bullets);
-                            this.uiThreadedWrapper.kill();
+
                         }
                     }
-                    if(i<this.bullets.size()) {
+                    if (i < this.bullets.size()) {
                         Log.d("index", i + " " + this.bullets.size());
                         this.bullets.get(i).setY(this.bullets.get(i).getY() - 10);
                     }
@@ -57,15 +62,17 @@ public class BulletMoveThread implements Runnable{
         }
     }
 
-    public void setBullets(ArrayList<Bullet> bullets) {
+
+    public void setBullets (ArrayList < Bullet > bullets) {
         this.bullets = bullets;
     }
 
-    public void setEnemies(ArrayList<Enemy> enemies){
+    public void setEnemies (ArrayList < Enemy > enemies) {
         this.enemies = enemies;
     }
 
-    public void setPaused(boolean paused) {
+    public void setPaused ( boolean paused){
         isPaused = paused;
     }
 }
+

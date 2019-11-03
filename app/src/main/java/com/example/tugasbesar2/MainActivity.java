@@ -98,22 +98,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view.getId() == this.play.getId()) {
-                if(!this.pause) {
-                    this.enemyMoveThread.setPaused(true);
-                    this.enemyThread.setPaused(true);
-                    this.bulletThread.setPaused(true);
-                    this.bulletMoveThread.setPaused(true);
-                    this.pause = true;
-                }
-                else if(this.pause){
-                    this.enemyMoveThread.setPaused(false);
-                    this.enemyThread.setPaused(false);
-                    this.playerMoveThread.setPaused(true);
-                    this.bulletThread.setPaused(false);
-                    this.bulletMoveThread.setPaused(false);
-                    this.pause = false;
-                }
+            if(!this.pause) {
+                this.enemyMoveThread.setPaused(true);
+                this.enemyThread.setPaused(true);
+                this.bulletThread.setPaused(true);
+                this.bulletMoveThread.setPaused(true);
+                this.pause = true;
             }
+            else if(this.pause){
+                this.enemyMoveThread.setPaused(false);
+                this.enemyThread.setPaused(false);
+                this.playerMoveThread.setPaused(true);
+                this.bulletThread.setPaused(false);
+                this.bulletMoveThread.setPaused(false);
+                this.pause = false;
+            }
+        }
         else if(view.getId() == this.mode.getId()){
             if(this.sensor){
                 this.sensor = false;
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 this.playerMoveThread.setPaused(true);
             }
         }
-        }
+    }
 
 
     @Override
@@ -267,6 +267,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void setEnemy(Enemy enemy) {
+        int nextH=(int) Math.floor(Integer.parseInt(this.kill_tv.getText().toString()) / 5);
+        enemy.setHealt(enemy.getHealt()+nextH);
         this.enemies.add(enemy);
         Player player = this.player;
         this.bulletMoveThread.setEnemies(this.enemies);
@@ -336,10 +338,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void kill(){
-            this.kill+=1;
-            this.kill_tv.setText(this.kill+"");
-            this.skor = this.kill + this.jarak;
-            this.skor_tv.setText(this.skor+"");
+        this.kill+=1;
+        this.kill_tv.setText(this.kill+"");
+        this.skor = this.kill + this.jarak;
+        this.skor_tv.setText(this.skor+"");
     }
 
     @Override

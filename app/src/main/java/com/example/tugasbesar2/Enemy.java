@@ -6,11 +6,21 @@ import android.graphics.Paint;
 public class Enemy {
     private int x;
     private int y;
+    //power Up
+    private int healt;
 
-
-    public Enemy(int x, int y){
+    public Enemy(int x, int y, int healt) {
         this.x = x;
         this.y = y;
+        this.healt = healt;
+    }
+
+    public int getHealt() {
+        return healt;
+    }
+
+    public void setHealt(int healt) {
+        this.healt = healt;
     }
 
     public int GetX(){
