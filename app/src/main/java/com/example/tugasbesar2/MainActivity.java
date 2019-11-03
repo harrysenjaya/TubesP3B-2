@@ -30,6 +30,8 @@ import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,View.OnTouchListener,IMainActivity, SensorEventListener {
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     SensorManager mSensorManager;
     Sensor accelerometer;
     Sensor magnetometer;
+    PostCalculateTask postCalculateTask;
 
     float[] accelerometerReading;
     float[] magnetometerReading;
@@ -215,6 +218,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         this.accelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         this.magnetometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        this.postCalculateTask = new PostCalculateTask(this, this);
+        this.postCalculateTask.executeGET(2017730067);
 
         mBitmap = Bitmap.createBitmap(ivCanvas.getWidth(), ivCanvas.getHeight(), Bitmap.Config.ARGB_8888);
 
@@ -237,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.playerMoveThread.start();
         this.enemyThread = new EnemyThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.ivCanvas.getHeight());
         this.enemyThread.start();
-        this.enemyMoveThread = new EnemyMoveThread(this.objUIWrapper, this.ivCanvas.getHeight(), this.enemies, this.presenter);
+        this.enemyMoveThread = new EnemyMoveThread(this.objUIWrapper, this.ivCanvas.getHeight(), this.enemies);
         this.enemyMoveThread.start();
         this.bulletThread = new BulletThread(this.objUIWrapper,this.player);
         this.bulletThread.start();
@@ -362,6 +367,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.bulletMoveThread.setGameOver(true);
         this.bulletThread.setGameOver(true);
         this.playerMoveThread.setGameOver(true);
+        if(Integer.parseInt(this.highscore.getText().toString())<this.skor) {
+            this.postCalculateTask.executePOST(2017730067, 1, this.skor);
+        }
         this.play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -371,19 +379,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void sendResult(Result result){
-        String[] res = result.getResult();
-        String temp ="";
-        boolean flag = true;
-        for(int i=0; i<res.length;i++){
-            if(flag){
-                temp+= res[i];
-                flag = false;
-            }
-            else{
-                temp+=", " +res[i];
-            }
-        }
-        this.skor_tv.setText(temp);
+    public void sendResult(String result){
+        this.highscore.setText(result);
     }
 }

@@ -12,15 +12,13 @@ public class EnemyMoveThread implements Runnable{
     protected int height;
     protected ArrayList<Enemy> enemies;
     private boolean isPaused;
-    private Presenter presenter;
     private boolean gameOver;
 
-    public EnemyMoveThread(UIThreadedWrapper uiThreadedWrapper, int height, ArrayList<Enemy> enemies, Presenter presenter){
+    public EnemyMoveThread(UIThreadedWrapper uiThreadedWrapper, int height, ArrayList<Enemy> enemies){
         this.uiThreadedWrapper = uiThreadedWrapper;
         this.thread = new Thread(this);
         this.height = height;
         this.enemies = enemies;
-        this.presenter = presenter;
     }
 
     public void start(){
