@@ -79,6 +79,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.kill_tv = findViewById(R.id.kill);
         this.highscore = findViewById(R.id.nilaiTertingginya);
         this.mode = findViewById(R.id.sensor);
+        this.presenter = new Presenter(this);
+        this.objUIWrapper = new UIThreadedWrapper(this);
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        this.accelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        this.magnetometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        this.postCalculateTask = new PostCalculateTask(this, this);
     }
 
     @Override
@@ -162,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onSensorChanged(SensorEvent event){
+        Log.d("SENSOR AKTIF","");
         if(this.sensor) {
             int sensorType = event.sensor.getType();
             switch (sensorType) {
@@ -210,15 +217,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.kill_tv.setText(0+"");
         this.skor_tv.setText(0+"");
         this.jarak_tv.setText(0+"");
-        this.presenter = new Presenter(this);
-        this.objUIWrapper = new UIThreadedWrapper(this);
         this.play.setOnClickListener(this);
         this.ivCanvas.setOnTouchListener(this);
         this.mode.setOnClickListener(this);
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        this.accelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        this.magnetometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        this.postCalculateTask = new PostCalculateTask(this, this);
         this.postCalculateTask.executeGET(2017730067);
 
         mBitmap = Bitmap.createBitmap(ivCanvas.getWidth(), ivCanvas.getHeight(), Bitmap.Config.ARGB_8888);

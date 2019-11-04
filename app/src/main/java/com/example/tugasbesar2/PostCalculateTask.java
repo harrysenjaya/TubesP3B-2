@@ -31,11 +31,13 @@ public class PostCalculateTask {
     }
 
     public void executeGET(final int npm){
+        Log.d("SUKSES","GET");
         RequestQueue queue = Volley.newRequestQueue(context);
         String url =BASE_URL+"?api_key="+npm;
         StringRequest stringRequest = new StringRequest(Request.Method.GET,url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Log.d("RESPONSE",response);
                 processResult(response);
             }
         }, new Response.ErrorListener() {
@@ -50,6 +52,7 @@ public class PostCalculateTask {
 
 
     public void executePOST(final int npm, final int order, final int value){
+        Log.d("SUKSES","POST");
         RequestQueue queue = Volley.newRequestQueue(context);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, BASE_URL, new Response.Listener<String>() {
             @Override
@@ -66,18 +69,19 @@ public class PostCalculateTask {
             @Override
             protected Map<String, String> getParams()
             {
-                Map<String, String>  param = new HashMap<String, String>();
-                param.put("api_key", npm+"");
-                param.put("order", order+"");
-                param.put("value", value+"");
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("api_key", npm+"");
+                params.put("order", order+"");
+                params.put("value", value+"");
 
-                return param;
+                return params;
             }
         };
         queue.add(stringRequest);
     }
 
     public void processResult(String response){
+        Log.d("RESPONSE",response + "1");
         int idxHighscore = response.indexOf("value");
         int lastindex = idxHighscore+8;
         int ctr = 0;
