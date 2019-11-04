@@ -371,6 +371,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(Integer.parseInt(this.highscore.getText().toString())<this.skor) {
             this.postCalculateTask.executePOST(2017730067, 1, this.skor);
         }
+        this.mode.setOnClickListener(null);
         this.play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
