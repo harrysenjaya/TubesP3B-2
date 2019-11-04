@@ -1,6 +1,8 @@
-package com.example.tugasbesar2;
+package com.example.tugasbesar2.Thread;
 
-import android.util.Log;
+import com.example.tugasbesar2.Model.Bullet;
+import com.example.tugasbesar2.Model.Enemy;
+import com.example.tugasbesar2.Presenter.UIThreadedWrapper;
 
 import java.util.ArrayList;
 

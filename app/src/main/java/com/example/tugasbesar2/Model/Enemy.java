@@ -1,4 +1,4 @@
-package com.example.tugasbesar2;
+package com.example.tugasbesar2.Model;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

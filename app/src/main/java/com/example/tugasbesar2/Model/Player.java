@@ -1,13 +1,19 @@
-package com.example.tugasbesar2;
+package com.example.tugasbesar2.Model;
 
-public class Bullet {
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
+
+public class Player {
     private int x;
     private int y;
+    private int width;
 
 
-    public Bullet(int x, int y){
+    public Player(int x, int y){
         this.x = x;
         this.y = y;
+        this.width = 100;
     }
 
     public int getX(){

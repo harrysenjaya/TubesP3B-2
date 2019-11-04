@@ -1,4 +1,7 @@
-package com.example.tugasbesar2;
+package com.example.tugasbesar2.Thread;
+
+import com.example.tugasbesar2.Model.Enemy;
+import com.example.tugasbesar2.Presenter.UIThreadedWrapper;
 
 import java.util.Random;
 

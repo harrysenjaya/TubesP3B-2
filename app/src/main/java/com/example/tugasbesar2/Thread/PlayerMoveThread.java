@@ -1,8 +1,7 @@
-package com.example.tugasbesar2;
+package com.example.tugasbesar2.Thread;
 
-import android.util.Log;
-
-import java.util.Random;
+import com.example.tugasbesar2.Model.Player;
+import com.example.tugasbesar2.Presenter.UIThreadedWrapper;
 
 public class PlayerMoveThread implements Runnable {
     protected Thread thread;

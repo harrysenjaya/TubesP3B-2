@@ -1,4 +1,4 @@
-package com.example.tugasbesar2;
+package com.example.tugasbesar2.Presenter;
 
 import android.content.Context;
 import android.util.Log;
@@ -10,6 +10,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.tugasbesar2.IMainActivity;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -19,10 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PostCalculateTask {
-    final String BASE_URL = "http://p3b.labftis.net/api.php";
-    IMainActivity ui;
-    Context context;
-    Gson gson;
+    protected final String BASE_URL = "http://p3b.labftis.net/api.php";
+    protected IMainActivity ui;
+    protected Context context;
+    protected Gson gson;
 
     public PostCalculateTask(Context context, IMainActivity ui){
         this.context = context;
@@ -70,7 +71,7 @@ public class PostCalculateTask {
             protected Map<String, String> getParams()
             {
                 Map<String, String>  params = new HashMap<String, String>();
-                params.put("api_key", npm+"");
+                params.put("api_key",npm+"");
                 params.put("order", order+"");
                 params.put("value", value+"");
 

@@ -1,7 +1,8 @@
-package com.example.tugasbesar2;
+package com.example.tugasbesar2.Thread;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+import com.example.tugasbesar2.Model.Bullet;
+import com.example.tugasbesar2.Model.Player;
+import com.example.tugasbesar2.Presenter.UIThreadedWrapper;
 
 public class BulletThread implements Runnable{
     protected Thread thread;

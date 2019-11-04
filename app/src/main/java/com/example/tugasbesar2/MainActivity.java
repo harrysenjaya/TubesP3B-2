@@ -3,70 +3,67 @@ package com.example.tugasbesar2;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.tugasbesar2.Model.Bullet;
+import com.example.tugasbesar2.Model.Enemy;
+import com.example.tugasbesar2.Model.Player;
+import com.example.tugasbesar2.Thread.BulletMoveThread;
+import com.example.tugasbesar2.Thread.BulletThread;
+import com.example.tugasbesar2.Thread.EnemyMoveThread;
+import com.example.tugasbesar2.Thread.EnemyThread;
+import com.example.tugasbesar2.Thread.PlayerMoveThread;
+import com.example.tugasbesar2.Presenter.PostCalculateTask;
+import com.example.tugasbesar2.Presenter.UIThreadedWrapper;
 import com.melnykov.fab.FloatingActionButton;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,View.OnTouchListener,IMainActivity, SensorEventListener {
-    Bitmap mBitmap;
-    ImageView ivCanvas;
-    Canvas mCanvas;
-    Paint paint;
-    TextView skor_tv;
-    TextView jarak_tv;
-    TextView kill_tv;
-    TextView highscore;
-    EnemyThread enemyThread;
-    EnemyMoveThread enemyMoveThread;
-    Player player;
-    PlayerMoveThread playerMoveThread;
-    BulletThread bulletThread;
-    BulletMoveThread bulletMoveThread;
-    UIThreadedWrapper objUIWrapper;
-    FloatingActionButton play;
-    FloatingActionButton mode;
-    ArrayList<Enemy> enemies;
-    ArrayList<Bullet> bullets;
-    Presenter presenter;
-    SensorManager mSensorManager;
-    Sensor accelerometer;
-    Sensor magnetometer;
-    PostCalculateTask postCalculateTask;
+    protected Bitmap mBitmap;
+    protected ImageView ivCanvas;
+    protected Canvas mCanvas;
+    protected Paint paint;
+    protected TextView skor_tv;
+    protected TextView jarak_tv;
+    protected TextView kill_tv;
+    protected TextView highscore;
+    protected EnemyThread enemyThread;
+    protected EnemyMoveThread enemyMoveThread;
+    protected PlayerMoveThread playerMoveThread;
+    protected BulletThread bulletThread;
+    protected BulletMoveThread bulletMoveThread;
+    protected UIThreadedWrapper objUIWrapper;
+    protected FloatingActionButton play;
+    protected FloatingActionButton mode;
+    protected SensorManager mSensorManager;
+    protected Sensor accelerometer;
+    protected Sensor magnetometer;
+    protected PostCalculateTask postCalculateTask;
 
-    float[] accelerometerReading;
-    float[] magnetometerReading;
-    boolean pause;
-    boolean sensor;
-    int skor;
-    int jarak;
-    int kill;
+    protected float[] accelerometerReading;
+    protected float[] magnetometerReading;
+    protected boolean pause;
+    protected boolean sensor;
+    protected int skor;
+    protected int jarak;
+    protected int kill;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.kill_tv = findViewById(R.id.kill);
         this.highscore = findViewById(R.id.nilaiTertingginya);
         this.mode = findViewById(R.id.sensor);
-        this.presenter = new Presenter(this);
         this.objUIWrapper = new UIThreadedWrapper(this);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         this.accelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -141,12 +137,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     this.playerMoveThread.setPaused(true);
-                    this.bulletThread.setPlayer(this.player);
-                    this.bulletMoveThread.setBullets(this.bullets);
+                    objUIWrapper.getBullet();
                 }
             }
         }
         return true;
+    }
+
+
+    public void setBulletThread(ArrayList<Bullet> bullets, Player player){
+        this.bulletThread.setPlayer(player);
+        this.bulletMoveThread.setBullets(bullets);
     }
 
     @Override
@@ -211,8 +212,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void initiate() {
         this.jarak = 0;
         this.kill = 0;
-        this.enemies = new ArrayList<>();
-        this.bullets = new ArrayList<>();
+
         this.sensor = false;
         this.kill_tv.setText(0+"");
         this.skor_tv.setText(0+"");
@@ -236,20 +236,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int x = ivCanvas.getWidth() / 2;
         int y = ivCanvas.getHeight() / 2;
 
+
         Player player = new Player(x, (int) (ivCanvas.getHeight() - (ivCanvas.getHeight() * 0.3)));
-        this.player = player;
+        ArrayList<Enemy> enemies = new ArrayList<>();
+        ArrayList<Bullet> bullets = new ArrayList<>();
+        objUIWrapper.setInitData(player,enemies,bullets);
+
         this.drawPlayer(x, (int) (ivCanvas.getHeight() - (ivCanvas.getHeight() * 0.3)));
-        this.playerMoveThread = new PlayerMoveThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.player);
+
+    }
+
+    public void setThread(Player player, ArrayList<Enemy> enemies, ArrayList<Bullet> bullets){
+        Log.d("setthread", "mask");
+        this.playerMoveThread = new PlayerMoveThread(this.objUIWrapper, this.ivCanvas.getWidth(), player);
         this.playerMoveThread.start();
         this.enemyThread = new EnemyThread(this.objUIWrapper, this.ivCanvas.getWidth(), this.ivCanvas.getHeight());
         this.enemyThread.start();
-        this.enemyMoveThread = new EnemyMoveThread(this.objUIWrapper, this.ivCanvas.getHeight(), this.enemies);
+        this.enemyMoveThread = new EnemyMoveThread(this.objUIWrapper, this.ivCanvas.getHeight(), enemies);
         this.enemyMoveThread.start();
-        this.bulletThread = new BulletThread(this.objUIWrapper,this.player);
+        this.bulletThread = new BulletThread(this.objUIWrapper,player);
         this.bulletThread.start();
-        this.bulletMoveThread = new BulletMoveThread(this.objUIWrapper,this.bullets,this.enemies);
+        this.bulletMoveThread = new BulletMoveThread(this.objUIWrapper,bullets,enemies);
         this.bulletMoveThread.start();
     }
+
+
 
     public void resetCanvas() {
         this.mCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
@@ -278,19 +289,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    public void setEnemy(Enemy enemy) {
+    public void setEnemy(Enemy enemy, Player pl, ArrayList<Enemy> enemies, ArrayList<Bullet> bullets) {
         int nextH=(int) Math.floor(Integer.parseInt(this.kill_tv.getText().toString()) / 5);
         enemy.setHealth(enemy.getHealth()+nextH);
-        this.enemies.add(enemy);
-        Player player = this.player;
-        this.bulletMoveThread.setEnemies(this.enemies);
+        objUIWrapper.addEnemy(enemy);
+
+
+
+    }
+
+    public void drawSetEnemy(Player pl, ArrayList<Bullet> bullets, ArrayList<Enemy> enemies){
+        this.bulletMoveThread.setEnemies(enemies);
         resetCanvas();
-        this.drawPlayer(player.getX(), player.getY());
-        for (int i = 0; i < this.enemies.size(); i++) {
-            this.drawEnemy(this.enemies.get(i).GetX(), this.enemies.get(i).GetY());
+        this.drawPlayer(pl.getX(), pl.getY());
+        for (int i = 0; i < enemies.size(); i++) {
+            this.drawEnemy(enemies.get(i).GetX(), enemies.get(i).GetY());
         }
-        for (int i = 0; i < this.bullets.size(); i++) {
-            this.drawBullet(this.bullets.get(i).getX(), this.bullets.get(i).getY());
+        for (int i = 0; i < bullets.size(); i++) {
+            this.drawBullet(bullets.get(i).getX(), bullets.get(i).getY());
         }
         this.jarak+=1;
         this.jarak_tv.setText(this.jarak+"");
@@ -298,53 +314,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.skor_tv.setText(this.skor+"");
     }
 
-    public void setEnemies(ArrayList<Enemy> enemies) {
-        Player player = this.player;
-        this.enemies = enemies;
+
+
+    public void setEnemies(Player player, ArrayList<Enemy> enemies, ArrayList<Bullet> bullets) {
+
         resetCanvas();
         this.drawPlayer(player.getX(), player.getY());
-        for (int i = 0; i < this.enemies.size(); i++) {
-            this.drawEnemy(this.enemies.get(i).GetX(), this.enemies.get(i).GetY());
+        for (int i = 0; i < enemies.size(); i++) {
+            this.drawEnemy(enemies.get(i).GetX(), enemies.get(i).GetY());
         }
-        for (int i = 0; i < this.bullets.size(); i++) {
-            this.drawBullet(this.bullets.get(i).getX(), this.bullets.get(i).getY());
+        for (int i = 0; i < bullets.size(); i++) {
+            this.drawBullet(bullets.get(i).getX(), bullets.get(i).getY());
         }
     }
 
-    public void setPlayer(Player player) {
+    public void setPlayer(Player player, ArrayList<Enemy> enemies, ArrayList<Bullet> bullets) {
         resetCanvas();
-        this.player = player;
         this.drawPlayer(player.getX(), player.getY());
-        for (int i = 0; i < this.enemies.size(); i++) {
-            this.drawEnemy(this.enemies.get(i).GetX(), this.enemies.get(i).GetY());
+        for (int i = 0; i < enemies.size(); i++) {
+            this.drawEnemy(enemies.get(i).GetX(), enemies.get(i).GetY());
         }
-        for (int i = 0; i < this.bullets.size(); i++) {
-            this.drawBullet(this.bullets.get(i).getX(), this.bullets.get(i).getY());
+        for (int i = 0; i < bullets.size(); i++) {
+            this.drawBullet(bullets.get(i).getX(), bullets.get(i).getY());
         }
     }
 
-    public void setBullet(Bullet bullet){
-        this.bullets.add(bullet);
+    public void setBullet(Player player, Bullet bullet, ArrayList<Enemy> enemies, ArrayList<Bullet> bullets){
         resetCanvas();
         this.drawPlayer(player.getX(),player.getY());
-        for (int i = 0; i < this.enemies.size(); i++) {
-            this.drawEnemy(this.enemies.get(i).GetX(), this.enemies.get(i).GetY());
+        for (int i = 0; i < enemies.size(); i++) {
+            this.drawEnemy(enemies.get(i).GetX(), enemies.get(i).GetY());
         }
-        for (int i = 0; i < this.bullets.size(); i++) {
-            this.drawBullet(this.bullets.get(i).getX(), this.bullets.get(i).getY());
+        for (int i = 0; i < bullets.size(); i++) {
+            this.drawBullet(bullets.get(i).getX(), bullets.get(i).getY());
         }
 
     }
 
-    public void setBullets(ArrayList<Bullet> bullets){
-        this.bullets = bullets;
+    public void setBullets(Player player, ArrayList<Enemy> enemies, ArrayList<Bullet> bullets){
         resetCanvas();
         this.drawPlayer(player.getX(),player.getY());
-        for (int i = 0; i < this.enemies.size(); i++) {
-            this.drawEnemy(this.enemies.get(i).GetX(), this.enemies.get(i).GetY());
+        for (int i = 0; i < enemies.size(); i++) {
+            this.drawEnemy(enemies.get(i).GetX(), enemies.get(i).GetY());
         }
-        for (int i = 0; i < this.bullets.size(); i++) {
-            this.drawBullet(this.bullets.get(i).getX(), this.bullets.get(i).getY());
+        for (int i = 0; i < bullets.size(); i++) {
+            this.drawBullet(bullets.get(i).getX(), bullets.get(i).getY());
         }
 
     }
